@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Void Market — DonutSMP Giveaways & Quickdrops</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --void: #000000;
+      --deep: #07000f;
+      --purple-dark: #1a0030;
+      --purple-mid: #5a00aa;
+      --purple-bright: #9b30ff;
+      --purple-glow: #c77dff;
+      --neon: #df80ff;
+      --neon-pink: #ff44cc;
+      --white: #f0e6ff;
+      --glass: rgba(120, 40, 200, 0.08);
+      --border: rgba(155, 48, 255, 0.3);
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--void);
+      color: var(--white);
+      font-family: 'Rajdhani', sans-serif;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ── Custom cursor ── */
+    .cursor {
+      width: 16px; height: 16px;
+      border: 2px solid var(--neon);
+      border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s, background 0.15s;
+      box-shadow: 0 0 10px var(--neon), 0 0 20px var(--purple-bright);
+    }
+    .cursor-dot {
+      width: 4px; height: 4px;
+      background: var(--neon);
+      border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+    }
+
+    /* ── Star field BG ── */
+    #stars-canvas {
+      position: fixed; inset: 0;
+      z-index: 0; pointer-events: none;
+    }
+
+    /* ── Noise overlay ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 1; opacity: 0.4;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 40px;
+      background: linear-gradient(180deg, rgba(0,0,0,0.95) 0%, transparent 100%);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: 'Orbitron', monospace;
+      font-size: 1.6rem; font-weight: 900;
+      letter-spacing: 4px;
+      color: var(--neon);
+      text-shadow: 0 0 20px var(--purple-bright), 0 0 40px var(--purple-mid);
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--neon-pink); }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.95rem; font-weight: 600;
+      letter-spacing: 2px; text-transform: uppercase;
+      color: rgba(240,230,255,0.6);
+      text-decoration: none;
+      transition: color 0.2s, text-shadow 0.2s;
+    }
+    .nav-links a:hover {
+      color: var(--neon);
+      text-shadow: 0 0 12px var(--neon);
+    }
+    .nav-discord {
+      display: flex; align-items: center; gap: 8px;
+      background: linear-gradient(135deg, #5865F2, #7289da);
+      color: #fff; font-family: 'Rajdhani', sans-serif;
+      font-weight: 700; font-size: 0.9rem; letter-spacing: 1.5px;
+      text-transform: uppercase; text-decoration: none;
+      padding: 9px 20px; border-radius: 6px;
+      box-shadow: 0 0 18px rgba(88,101,242,0.5);
+      transition: box-shadow 0.2s, transform 0.15s;
+    }
+    .nav-discord:hover { box-shadow: 0 0 30px rgba(88,101,242,0.9); transform: translateY(-2px); }
+
+    /* ── HERO ── */
+    #hero {
+      position: relative; z-index: 2;
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 120px 20px 60px;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(155,48,255,0.12);
+      border: 1px solid var(--border);
+      padding: 6px 18px; border-radius: 999px;
+      font-size: 0.78rem; letter-spacing: 3px; text-transform: uppercase;
+      color: var(--neon); margin-bottom: 28px;
+      animation: fadeDown 0.8s ease both;
+    }
+    .hero-badge::before {
+      content: '';
+      width: 6px; height: 6px;
+      background: var(--neon); border-radius: 50%;
+      animation: pulse 1.4s infinite;
+    }
+    @keyframes pulse { 0%,100% { opacity:1; box-shadow:0 0 0 0 rgba(199,125,255,0.6); } 50% { opacity:.7; box-shadow:0 0 0 8px rgba(199,125,255,0); } }
+
+    .hero-title {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(3rem, 10vw, 8rem);
+      font-weight: 900;
+      line-height: 0.95;
+      letter-spacing: -2px;
+      animation: fadeDown 0.9s 0.1s ease both;
+    }
+    .hero-title .void { color: var(--white); }
+    .hero-title .market {
+      display: block;
+      background: linear-gradient(135deg, var(--purple-bright), var(--neon), var(--neon-pink));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 30px rgba(155,48,255,0.8));
+    }
+    .hero-sub {
+      margin-top: 24px;
+      font-size: clamp(1rem, 2.5vw, 1.4rem);
+      font-weight: 300; letter-spacing: 1px;
+      color: rgba(240,230,255,0.55);
+      max-width: 600px;
+      animation: fadeDown 1s 0.2s ease both;
+    }
+    .hero-sub strong { color: var(--neon-pink); font-weight: 700; }
+
+    .hero-ctas {
+      margin-top: 44px;
+      display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;
+      animation: fadeDown 1s 0.3s ease both;
+    }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: linear-gradient(135deg, var(--purple-mid), var(--purple-bright));
+      color: #fff; font-family: 'Orbitron', monospace;
+      font-size: 0.8rem; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; text-decoration: none;
+      padding: 15px 32px; border-radius: 8px;
+      box-shadow: 0 0 30px rgba(155,48,255,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+      transition: box-shadow 0.25s, transform 0.15s;
+    }
+    .btn-primary:hover { box-shadow: 0 0 60px rgba(155,48,255,0.9), inset 0 1px 0 rgba(255,255,255,0.1); transform: translateY(-3px); }
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: transparent;
+      color: var(--neon); font-family: 'Orbitron', monospace;
+      font-size: 0.8rem; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; text-decoration: none;
+      padding: 14px 32px; border-radius: 8px;
+      border: 1px solid var(--border);
+      box-shadow: 0 0 15px rgba(155,48,255,0.2), inset 0 0 20px rgba(155,48,255,0.05);
+      transition: box-shadow 0.25s, border-color 0.2s, transform 0.15s;
+    }
+    .btn-secondary:hover { box-shadow: 0 0 40px rgba(155,48,255,0.5); border-color: var(--neon); transform: translateY(-3px); }
+
+    /* Scroll indicator */
+    .scroll-hint {
+      margin-top: 70px;
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      color: rgba(240,230,255,0.3); font-size: 0.7rem; letter-spacing: 3px;
+      animation: fadeDown 1s 0.5s ease both;
+    }
+    .scroll-line {
+      width: 1px; height: 50px;
+      background: linear-gradient(to bottom, var(--purple-bright), transparent);
+      animation: scrollLine 1.8s ease-in-out infinite;
+    }
+    @keyframes scrollLine { 0%,100% { transform: scaleY(1); opacity:1; } 50% { transform: scaleY(0.5); opacity:0.3; } }
+
+    @keyframes fadeDown { from { opacity:0; transform: translateY(-20px); } to { opacity:1; transform: translateY(0); } }
+
+    /* ── STATS BAR ── */
+    #stats {
+      position: relative; z-index: 2;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .stat-item {
+      background: var(--deep);
+      padding: 30px 20px; text-align: center;
+    }
+    .stat-num {
+      font-family: 'Orbitron', monospace;
+      font-size: 2rem; font-weight: 900;
+      color: var(--neon);
+      text-shadow: 0 0 20px var(--purple-bright);
+    }
+    .stat-label {
+      font-size: 0.75rem; letter-spacing: 2px;
+      text-transform: uppercase; color: rgba(240,230,255,0.4);
+      margin-top: 4px;
+    }
+
+    /* ── SECTION COMMON ── */
+    section { position: relative; z-index: 2; padding: 100px 40px; }
+    .section-label {
+      font-size: 0.7rem; letter-spacing: 4px; text-transform: uppercase;
+      color: var(--purple-glow); margin-bottom: 12px;
+    }
+    .section-title {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      font-weight: 900; line-height: 1.1;
+      margin-bottom: 16px;
+    }
+    .section-desc {
+      font-size: 1.1rem; font-weight: 300;
+      color: rgba(240,230,255,0.55); max-width: 560px;
+      line-height: 1.7;
+    }
+    .glow-divider {
+      width: 80px; height: 2px;
+      background: linear-gradient(90deg, var(--purple-bright), var(--neon-pink));
+      margin: 20px 0;
+      box-shadow: 0 0 12px var(--purple-bright);
+    }
+
+    /* ── ABOUT ── */
+    #about { background: linear-gradient(180deg, var(--void) 0%, var(--deep) 100%); }
+    .about-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 60px; align-items: center; max-width: 1100px; margin: 0 auto;
+    }
+    .about-features { display: flex; flex-direction: column; gap: 18px; margin-top: 36px; }
+    .feat {
+      display: flex; align-items: flex-start; gap: 14px;
+      background: var(--glass);
+      border: 1px solid var(--border);
+      padding: 18px 20px; border-radius: 10px;
+      backdrop-filter: blur(6px);
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+    }
+    .feat:hover { border-color: var(--neon); box-shadow: 0 0 20px rgba(155,48,255,0.2); transform: translateX(6px); }
+    .feat-icon { font-size: 1.6rem; flex-shrink: 0; }
+    .feat-text strong { display: block; font-size: 1rem; font-weight: 700; color: var(--white); margin-bottom: 3px; }
+    .feat-text span { font-size: 0.88rem; color: rgba(240,230,255,0.5); }
+    .about-visual {
+      display: flex; flex-direction: column; gap: 16px;
+    }
+    .media-card {
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: 12px; padding: 22px 24px;
+      display: flex; align-items: center; gap: 16px;
+      backdrop-filter: blur(8px);
+      transition: box-shadow 0.2s, border-color 0.2s;
+    }
+    .media-card:hover { box-shadow: 0 0 30px rgba(155,48,255,0.3); border-color: var(--neon); }
+    .media-avatar {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--purple-mid), var(--neon-pink));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; flex-shrink: 0;
+      box-shadow: 0 0 16px rgba(155,48,255,0.5);
+    }
+    .media-info strong { display: block; font-size: 1rem; font-weight: 700; }
+    .media-info span { font-size: 0.8rem; color: rgba(240,230,255,0.45); letter-spacing: 1px; }
+    .media-badge {
+      margin-left: auto;
+      background: rgba(155,48,255,0.2); border: 1px solid var(--border);
+      font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--neon); padding: 4px 10px; border-radius: 999px;
+    }
+
+    /* ── GIVEAWAYS ── */
+    #giveaways { background: var(--deep); }
+    .give-header { max-width: 1100px; margin: 0 auto 50px; }
+    .giveaway-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px; max-width: 1100px; margin: 0 auto;
+    }
+    .give-card {
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: 14px; padding: 28px 26px;
+      position: relative; overflow: hidden;
+      backdrop-filter: blur(8px);
+      transition: box-shadow 0.25s, transform 0.2s, border-color 0.2s;
+    }
+    .give-card::before {
+      content: '';
+      position: absolute; top: -60px; right: -60px;
+      width: 150px; height: 150px;
+      background: radial-gradient(circle, rgba(155,48,255,0.2), transparent 70%);
+      border-radius: 50%; pointer-events: none;
+    }
+    .give-card:hover { box-shadow: 0 0 40px rgba(155,48,255,0.35); transform: translateY(-4px); border-color: var(--neon); }
+    .give-card.featured { border-color: var(--neon-pink); }
+    .give-card.featured::before { background: radial-gradient(circle, rgba(255,68,204,0.2), transparent 70%); }
+    .give-ribbon {
+      position: absolute; top: 16px; right: -24px;
+      background: var(--neon-pink);
+      color: #fff; font-size: 0.65rem; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase;
+      padding: 4px 36px; transform: rotate(45deg);
+    }
+    .give-icon { font-size: 2.2rem; margin-bottom: 14px; }
+    .give-amount {
+      font-family: 'Orbitron', monospace;
+      font-size: 1.8rem; font-weight: 900;
+      color: var(--neon);
+      text-shadow: 0 0 20px var(--purple-bright);
+      margin-bottom: 6px;
+    }
+    .give-amount.pink { color: var(--neon-pink); text-shadow: 0 0 20px var(--neon-pink); }
+    .give-title { font-size: 1.05rem; font-weight: 600; margin-bottom: 10px; }
+    .give-desc { font-size: 0.85rem; color: rgba(240,230,255,0.45); line-height: 1.6; margin-bottom: 20px; }
+    .give-meta { display: flex; gap: 10px; flex-wrap: wrap; }
+    .give-tag {
+      font-size: 0.7rem; letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--neon); border: 1px solid var(--border);
+      padding: 4px 10px; border-radius: 999px;
+      background: rgba(155,48,255,0.08);
+    }
+    .give-tag.pink { color: var(--neon-pink); border-color: rgba(255,68,204,0.3); }
+
+    /* ── QUICKDROPS ── */
+    #quickdrops { background: linear-gradient(180deg, var(--deep) 0%, var(--void) 100%); }
+    .qd-header { max-width: 1100px; margin: 0 auto 50px; }
+    .qd-feed {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .qd-item {
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: 10px; padding: 18px 24px;
+      display: grid; grid-template-columns: auto 1fr auto auto;
+      align-items: center; gap: 20px;
+      backdrop-filter: blur(6px);
+      transition: box-shadow 0.2s, border-color 0.2s, transform 0.15s;
+      animation: slideIn 0.4s ease both;
+    }
+    .qd-item:hover { box-shadow: 0 0 25px rgba(155,48,255,0.25); border-color: var(--purple-glow); transform: translateX(4px); }
+    @keyframes slideIn { from { opacity:0; transform:translateX(-20px); } to { opacity:1; transform:translateX(0); } }
+    .qd-num {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem; color: rgba(155,48,255,0.5);
+      width: 28px;
+    }
+    .qd-name { font-size: 1rem; font-weight: 600; }
+    .qd-name small { display: block; font-size: 0.75rem; color: rgba(240,230,255,0.4); font-weight: 300; margin-top: 2px; }
+    .qd-amount {
+      font-family: 'Orbitron', monospace;
+      font-size: 1.1rem; font-weight: 900;
+      color: var(--neon); text-shadow: 0 0 12px var(--purple-bright);
+    }
+    .qd-live {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 0.68rem; letter-spacing: 2px; text-transform: uppercase;
+      color: #4ade80;
+    }
+    .qd-live::before { content:''; width:6px; height:6px; background:#4ade80; border-radius:50%; animation: pulse 1.2s infinite; }
+    .qd-ended { font-size: 0.68rem; letter-spacing: 2px; text-transform: uppercase; color: rgba(240,230,255,0.3); }
+
+    /* ── DISCORD ── */
+    #discord { background: var(--void); }
+    .discord-inner {
+      max-width: 900px; margin: 0 auto;
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: 20px; padding: 60px;
+      backdrop-filter: blur(12px);
+      text-align: center;
+      box-shadow: 0 0 80px rgba(88,101,242,0.15), 0 0 40px rgba(155,48,255,0.1);
+      position: relative; overflow: hidden;
+    }
+    .discord-inner::before {
+      content: '';
+      position: absolute; top: -100px; left: 50%; transform: translateX(-50%);
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(88,101,242,0.12), transparent 70%);
+      border-radius: 50%; pointer-events: none;
+    }
+    .discord-logo { font-size: 4rem; margin-bottom: 20px; }
+    .discord-inner .section-title { color: #7289da; text-shadow: 0 0 30px rgba(88,101,242,0.8); }
+    .discord-inner .section-desc { margin: 0 auto 36px; }
+    .discord-embed {
+      background: rgba(30,15,50,0.6);
+      border-left: 4px solid #5865F2;
+      border-radius: 0 10px 10px 0;
+      padding: 20px 24px; text-align: left;
+      margin-bottom: 32px;
+    }
+    .embed-title {
+      font-family: 'Orbitron', monospace;
+      font-size: 1rem; font-weight: 700;
+      color: var(--neon-pink); margin-bottom: 10px;
+    }
+    .embed-body { font-size: 0.9rem; color: rgba(240,230,255,0.65); line-height: 1.7; }
+    .embed-body strong { color: var(--neon); }
+    .discord-btn {
+      display: inline-flex; align-items: center; gap: 12px;
+      background: #5865F2;
+      color: #fff; font-family: 'Orbitron', monospace;
+      font-size: 0.85rem; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; text-decoration: none;
+      padding: 16px 40px; border-radius: 10px;
+      box-shadow: 0 0 40px rgba(88,101,242,0.5);
+      transition: box-shadow 0.25s, transform 0.15s, background 0.2s;
+    }
+    .discord-btn:hover { background: #6475f9; box-shadow: 0 0 70px rgba(88,101,242,0.85); transform: translateY(-3px); }
+    .discord-members {
+      margin-top: 24px;
+      font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase;
+      color: rgba(240,230,255,0.35);
+    }
+    .discord-members strong { color: rgba(240,230,255,0.7); }
+
+    /* ── VOUCHES / SECURITY ── */
+    #trust { background: var(--deep); }
+    .trust-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px; max-width: 1100px; margin: 48px auto 0;
+    }
+    .trust-card {
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: 12px; padding: 28px 24px;
+      text-align: center; backdrop-filter: blur(6px);
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .trust-card:hover { box-shadow: 0 0 30px rgba(155,48,255,0.3); transform: translateY(-4px); }
+    .trust-icon { font-size: 2.4rem; margin-bottom: 12px; }
+    .trust-title { font-family: 'Orbitron', monospace; font-size: 0.9rem; font-weight: 700; margin-bottom: 8px; color: var(--neon); }
+    .trust-body { font-size: 0.85rem; color: rgba(240,230,255,0.45); line-height: 1.6; }
+
+    /* ── VOUCH TICKER ── */
+    .vouch-ticker-wrap {
+      overflow: hidden; width: 100%;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 0; margin-top: 60px;
+      background: rgba(0,0,0,0.4);
+    }
+    .vouch-ticker {
+      display: flex; gap: 40px;
+      width: max-content;
+      animation: ticker 30s linear infinite;
+    }
+    @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    .vouch-item {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 0.85rem; white-space: nowrap;
+      color: rgba(240,230,255,0.5);
+    }
+    .vouch-item::before { content: '⭐'; }
+    .vouch-item strong { color: var(--neon-pink); }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative; z-index: 2;
+      background: #000;
+      border-top: 1px solid var(--border);
+      padding: 40px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 20px;
+    }
+    .footer-logo {
+      font-family: 'Orbitron', monospace;
+      font-size: 1.2rem; font-weight: 900;
+      color: var(--neon); text-shadow: 0 0 15px var(--purple-bright);
+    }
+    .footer-logo span { color: var(--neon-pink); }
+    .footer-copy { font-size: 0.78rem; color: rgba(240,230,255,0.25); letter-spacing: 1px; }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { font-size: 0.8rem; color: rgba(240,230,255,0.35); text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--neon); }
+
+    /* ── AMBIENT GLOWS ── */
+    .glow-orb {
+      position: fixed; border-radius: 50%;
+      pointer-events: none; z-index: 0;
+      filter: blur(100px); opacity: 0.12;
+    }
+    .glow-orb-1 { width:600px; height:600px; background:var(--purple-mid); top:-200px; left:-200px; }
+    .glow-orb-2 { width:500px; height:500px; background:var(--neon-pink); bottom:-150px; right:-150px; }
+    .glow-orb-3 { width:300px; height:300px; background:var(--purple-bright); top:50%; left:50%; transform:translate(-50%,-50%); }
+
+    /* responsive */
+    @media (max-width: 768px) {
+      nav { padding: 14px 20px; }
+      .nav-links { display: none; }
+      section { padding: 70px 20px; }
+      .about-grid { grid-template-columns: 1fr; gap: 40px; }
+      .discord-inner { padding: 36px 24px; }
+      .qd-item { grid-template-columns: 1fr auto; }
+      .qd-num { display: none; }
+      footer { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Ambient glows -->
+<div class="glow-orb glow-orb-1"></div>
+<div class="glow-orb glow-orb-2"></div>
+<div class="glow-orb glow-orb-3"></div>
+
+<!-- Custom cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-dot" id="cursorDot"></div>
+
+<!-- Stars -->
+<canvas id="stars-canvas"></canvas>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#"><span>V</span>OID MARKET</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#giveaways">Giveaways</a></li>
+    <li><a href="#quickdrops">Quickdrops</a></li>
+    <li><a href="#trust">Trust</a></li>
+    <li><a href="#discord">Discord</a></li>
+  </ul>
+  <a class="nav-discord" href="https://discord.gg/6uFqUjct" target="_blank">
+    <svg width="18" height="14" viewBox="0 0 18 14" fill="none"><path d="M15.25 1.19A14.93 14.93 0 0 0 11.55 0c-.17.3-.37.72-.5 1.04a13.82 13.82 0 0 0-4.1 0C6.81.72 6.6.3 6.43 0A14.94 14.94 0 0 0 2.73 1.2 15.83 15.83 0 0 0 0 11.26a15.05 15.05 0 0 0 4.59 2.32c.37-.5.7-1.04.98-1.6a9.79 9.79 0 0 1-1.54-.74c.13-.09.25-.19.37-.28a10.73 10.73 0 0 0 9.2 0c.12.1.25.19.37.28-.5.29-1.02.54-1.55.75.28.57.61 1.1.98 1.6A15.01 15.01 0 0 0 18 11.26 15.8 15.8 0 0 0 15.25 1.2ZM6.01 9.22c-.89 0-1.62-.82-1.62-1.83s.71-1.83 1.62-1.83c.9 0 1.64.82 1.62 1.83 0 1.01-.72 1.83-1.62 1.83Zm5.98 0c-.89 0-1.62-.82-1.62-1.83s.71-1.83 1.62-1.83c.9 0 1.64.82 1.62 1.83 0 1.01-.71 1.83-1.62 1.83Z" fill="currentColor"/></svg>
+    Join Discord
+  </a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-badge">🎉 5 Billion Giveaway + Nitro Basic — Live Now</div>
+  <h1 class="hero-title">
+    <span class="void">VOID</span>
+    <span class="market">MARKET</span>
+  </h1>
+  <p class="hero-sub">The <strong>premier DonutSMP marketplace</strong> for daily giveaways, lightning quickdrops & exclusive rewards. The more vouches — the better market you unlock.</p>
+  <div class="hero-ctas">
+    <a href="https://discord.gg/6uFqUjct" target="_blank" class="btn-primary">
+      🎉 Enter Giveaway
+    </a>
+    <a href="#quickdrops" class="btn-secondary">
+      ⚡ View Quickdrops
+    </a>
+  </div>
+  <div class="scroll-hint">
+    <span>SCROLL</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div id="stats">
+  <div class="stat-item">
+    <div class="stat-num" data-target="5000000000">5B</div>
+    <div class="stat-label">Quickdrops</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">Daily</div>
+    <div class="stat-label">Giveaways</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">100M+</div>
+    <div class="stat-label">Per Quickdrop</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">MAX</div>
+    <div class="stat-label">Security Level</div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-grid">
+    <div>
+      <p class="section-label">// Who We Are</p>
+      <h2 class="section-title">About Us</h2>
+      <div class="glow-divider"></div>
+      <p class="section-desc">We host daily giveaways and quickdrops of 100M+ coins on DonutSMP. Our security and integrity is maximised — every drop is verified, every vouch is real. The more vouches you have, the better market tier you unlock.</p>
+      <div class="about-features">
+        <div class="feat">
+          <div class="feat-icon">🎉</div>
+          <div class="feat-text">
+            <strong>Daily Giveaways</strong>
+            <span>Active giveaways every single day — coins, nitro & more</span>
+          </div>
+        </div>
+        <div class="feat">
+          <div class="feat-icon">⚡</div>
+          <div class="feat-text">
+            <strong>Quickdrops 100M+</strong>
+            <span>Lightning-fast drops for active community members</span>
+          </div>
+        </div>
+        <div class="feat">
+          <div class="feat-icon">🛡️</div>
+          <div class="feat-text">
+            <strong>Maximised Security</strong>
+            <span>Full proof provided, integrity guaranteed on every transaction</span>
+          </div>
+        </div>
+        <div class="feat">
+          <div class="feat-icon">💵</div>
+          <div class="feat-text">
+            <strong>Paid Ads (Cheap)</strong>
+            <span>Affordable advertising slots — reach thousands instantly</span>
+          </div>
+        </div>
+        <div class="feat">
+          <div class="feat-icon">🔧</div>
+          <div class="feat-text">
+            <strong>Hiring Staff</strong>
+            <span>We're actively looking for dedicated team members</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="about-visual">
+      <p class="section-label" style="margin-bottom:16px;">// Featured Media</p>
+      <div class="media-card">
+        <div class="media-avatar">🎮</div>
+        <div class="media-info">
+          <strong>Jimi</strong>
+          <span>CONTENT CREATOR · DONUTSMP</span>
+        </div>
+        <div class="media-badge">Media</div>
+      </div>
+      <div class="media-card">
+        <div class="media-avatar">❄️</div>
+        <div class="media-info">
+          <strong>Snowfog</strong>
+          <span>CONTENT CREATOR · DONUTSMP</span>
+        </div>
+        <div class="media-badge">Media</div>
+      </div>
+      <div class="media-card">
+        <div class="media-avatar">🏆</div>
+        <div class="media-info">
+          <strong>Beckster</strong>
+          <span>CONTENT CREATOR · DONUTSMP</span>
+        </div>
+        <div class="media-badge">Media</div>
+      </div>
+      <div class="media-card">
+        <div class="media-avatar">✨</div>
+        <div class="media-info">
+          <strong>& More</strong>
+          <span>JOIN TO SEE ALL MEDIA MEMBERS</span>
+        </div>
+        <div class="media-badge">+More</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GIVEAWAYS -->
+<section id="giveaways">
+  <div class="give-header">
+    <p class="section-label">// Active & Upcoming</p>
+    <h2 class="section-title">Giveaways</h2>
+    <div class="glow-divider"></div>
+    <p class="section-desc">Current and upcoming giveaways. Join our Discord to enter. Vouches unlock higher tiers.</p>
+  </div>
+  <div class="giveaway-grid">
+
+    <div class="give-card featured">
+      <div class="give-ribbon">FEATURED</div>
+      <div class="give-icon">💎</div>
+      <div class="give-amount pink">5,000,000,000</div>
+      <div class="give-title">5 Billion Giveaway</div>
+      <div class="give-desc">Our biggest giveaway yet. Verified and fully proofed. Jump in the Discord and enter before it's gone.</div>
+      <div class="give-meta">
+        <span class="give-tag pink">🔴 Live Now</span>
+        <span class="give-tag pink">DonutSMP</span>
+        <span class="give-tag pink">Giveaway</span>
+      </div>
+    </div>
+
+    <div class="give-card">
+      <div class="give-icon">🌟</div>
+      <div class="give-amount">Nitro Basic</div>
+      <div class="give-title">Discord Nitro Basic Giveaway</div>
+      <div class="give-desc">Win a free Discord Nitro Basic subscription. Open to all verified members in the Void Market server.</div>
+      <div class="give-meta">
+        <span class="give-tag">🔴 Live Now</span>
+        <span class="give-tag">Nitro</span>
+        <span class="give-tag">Discord</span>
+      </div>
+    </div>
+
+    <div class="give-card">
+      <div class="give-icon">⚡</div>
+      <div class="give-amount">100M+</div>
+      <div class="give-title">Daily Quickdrop Giveaway</div>
+      <div class="give-desc">Daily quickdrops of 100M+ for active vouched members. New quickdrop every 24 hours — stay active to enter.</div>
+      <div class="give-meta">
+        <span class="give-tag">🟡 Daily</span>
+        <span class="give-tag">DonutSMP</span>
+        <span class="give-tag">Recurring</span>
+      </div>
+    </div>
+
+    <div class="give-card">
+      <div class="give-icon">🏅</div>
+      <div class="give-amount">VIP Access</div>
+      <div class="give-title">Market Tier Upgrade</div>
+      <div class="give-desc">Collect vouches to unlock higher market tiers. More vouches = better drops, exclusive access & priority entry.</div>
+      <div class="give-meta">
+        <span class="give-tag">🟢 Always On</span>
+        <span class="give-tag">Vouches</span>
+        <span class="give-tag">Tiers</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- QUICKDROPS -->
+<section id="quickdrops">
+  <div class="qd-header">
+    <p class="section-label">// Real-Time Feed</p>
+    <h2 class="section-title">Quickdrops</h2>
+    <div class="glow-divider"></div>
+    <p class="section-desc">Live and recent quickdrops in the Void Market server. Join Discord to catch the next one.</p>
+  </div>
+  <div class="qd-feed">
+
+    <div class="qd-item" style="animation-delay:0.05s">
+      <span class="qd-num">#01</span>
+      <div class="qd-name">Mega Quickdrop <small>DonutSMP · All Members</small></div>
+      <span class="qd-amount">250M</span>
+      <span class="qd-live">LIVE</span>
+    </div>
+    <div class="qd-item" style="animation-delay:0.1s">
+      <span class="qd-num">#02</span>
+      <div class="qd-name">Flash Drop <small>DonutSMP · Vouched Only</small></div>
+      <span class="qd-amount">150M</span>
+      <span class="qd-live">LIVE</span>
+    </div>
+    <div class="qd-item" style="animation-delay:0.15s">
+      <span class="qd-num">#03</span>
+      <div class="qd-name">Tier 2 Drop <small>DonutSMP · Tier 2+</small></div>
+      <span class="qd-amount">100M</span>
+      <span class="qd-ended">ENDED</span>
+    </div>
+    <div class="qd-item" style="animation-delay:0.2s">
+      <span class="qd-num">#04</span>
+      <div class="qd-name">Staff Pick Drop <small>DonutSMP · Selected</small></div>
+      <span class="qd-amount">200M</span>
+      <span class="qd-ended">ENDED</span>
+    </div>
+    <div class="qd-item" style="animation-delay:0.25s">
+      <span class="qd-num">#05</span>
+      <div class="qd-name">Media Member Drop <small>DonutSMP · Media Verified</small></div>
+      <span class="qd-amount">500M</span>
+      <span class="qd-ended">ENDED</span>
+    </div>
+    <div class="qd-item" style="animation-delay:0.3s">
+      <span class="qd-num">#06</span>
+      <div class="qd-name">Open Drop <small>DonutSMP · All Members</small></div>
+      <span class="qd-amount">100M</span>
+      <span class="qd-ended">ENDED</span>
+    </div>
+
+  </div>
+</section>
+
+<!-- DISCORD -->
+<section id="discord">
+  <div class="discord-inner">
+    <div class="discord-logo">🟣</div>
+    <p class="section-label">// Connect With Us</p>
+    <h2 class="section-title">Join the Void</h2>
+    <p class="section-desc" style="margin: 12px auto 28px;">Everything happens in our Discord. Giveaways, quickdrops, vouches, staff applications and paid ads — all in one place.</p>
+    <div class="discord-embed">
+      <div class="embed-title">🎉 5 BILLION GIVEAWAY + NITRO BASIC GIVEAWAY!</div>
+      <div class="embed-body">
+        <strong>The more vouches the better market you get access to!</strong><br/><br/>
+        We host daily giveaways and quick drops 100m+ 🎉<br/>
+        We are looking for staff, we also have paid ad prices (cheap) 💵<br/>
+        Lots of medias in here like Jimi, snowfog, beckster and more!<br/>
+        We have many vouches and we provide lots of proof too.<br/>
+        <strong>Our security and integrity is maximised 🛠️🛡️⚡️</strong>
+      </div>
+    </div>
+    <a href="https://discord.gg/6uFqUjct" target="_blank" class="discord-btn">
+      <svg width="22" height="17" viewBox="0 0 18 14" fill="none"><path d="M15.25 1.19A14.93 14.93 0 0 0 11.55 0c-.17.3-.37.72-.5 1.04a13.82 13.82 0 0 0-4.1 0C6.81.72 6.6.3 6.43 0A14.94 14.94 0 0 0 2.73 1.2 15.83 15.83 0 0 0 0 11.26a15.05 15.05 0 0 0 4.59 2.32c.37-.5.7-1.04.98-1.6a9.79 9.79 0 0 1-1.54-.74c.13-.09.25-.19.37-.28a10.73 10.73 0 0 0 9.2 0c.12.1.25.19.37.28-.5.29-1.02.54-1.55.75.28.57.61 1.1.98 1.6A15.01 15.01 0 0 0 18 11.26 15.8 15.8 0 0 0 15.25 1.2ZM6.01 9.22c-.89 0-1.62-.82-1.62-1.83s.71-1.83 1.62-1.83c.9 0 1.64.82 1.62 1.83 0 1.01-.72 1.83-1.62 1.83Zm5.98 0c-.89 0-1.62-.82-1.62-1.83s.71-1.83 1.62-1.83c.9 0 1.64.82 1.62 1.83 0 1.01-.71 1.83-1.62 1.83Z" fill="currentColor"/></svg>
+      Join discord.gg/6uFqUjct
+    </a>
+    <p class="discord-members">Active · <strong>Growing Daily</strong> · DonutSMP Community</p>
+  </div>
+</section>
+
+<!-- TRUST -->
+<section id="trust">
+  <div style="max-width:1100px; margin:0 auto;">
+    <p class="section-label">// Why Choose Us</p>
+    <h2 class="section-title">Security & Trust</h2>
+    <div class="glow-divider"></div>
+    <p class="section-desc">Every transaction is verified. Every vouch is earned. We don't cut corners.</p>
+  </div>
+  <div class="trust-grid">
+    <div class="trust-card">
+      <div class="trust-icon">🛡️</div>
+      <div class="trust-title">Max Security</div>
+      <div class="trust-body">Our security systems are built to protect every member and every transaction within the market.</div>
+    </div>
+    <div class="trust-card">
+      <div class="trust-icon">📸</div>
+      <div class="trust-title">Full Proof</div>
+      <div class="trust-body">Every drop and transaction comes with full screenshot and video proof. No exceptions, no excuses.</div>
+    </div>
+    <div class="trust-card">
+      <div class="trust-icon">⭐</div>
+      <div class="trust-title">Vouch System</div>
+      <div class="trust-body">Our vouch system is verified and audited. The more you vouch, the higher market tier you access.</div>
+    </div>
+    <div class="trust-card">
+      <div class="trust-icon">⚡</div>
+      <div class="trust-title">Integrity First</div>
+      <div class="trust-body">We uphold strict community rules. Bad actors are removed. Your experience matters here.</div>
+    </div>
+  </div>
+
+  <!-- Vouch ticker -->
+  <div class="vouch-ticker-wrap" style="margin-top:60px;">
+    <div class="vouch-ticker">
+      <span class="vouch-item"><strong>xGhost_</strong> — 250M received, smooth drop!</span>
+      <span class="vouch-item"><strong>VoidWalker</strong> — legit server, best quickdrops</span>
+      <span class="vouch-item"><strong>CrypticFox</strong> — got 150M, fully proofed ✅</span>
+      <span class="vouch-item"><strong>NightShade</strong> — staff are super helpful</span>
+      <span class="vouch-item"><strong>Luma_</strong> — best giveaway server on DonutSMP</span>
+      <span class="vouch-item"><strong>ZeroHour</strong> — won nitro, fast and legit</span>
+      <span class="vouch-item"><strong>PhantomRift</strong> — 100M quickdrop, no issues</span>
+      <span class="vouch-item"><strong>SilverBolt</strong> — Void Market is unmatched 🔥</span>
+      <!-- duplicate for seamless loop -->
+      <span class="vouch-item"><strong>xGhost_</strong> — 250M received, smooth drop!</span>
+      <span class="vouch-item"><strong>VoidWalker</strong> — legit server, best quickdrops</span>
+      <span class="vouch-item"><strong>CrypticFox</strong> — got 150M, fully proofed ✅</span>
+      <span class="vouch-item"><strong>NightShade</strong> — staff are super helpful</span>
+      <span class="vouch-item"><strong>Luma_</strong> — best giveaway server on DonutSMP</span>
+      <span class="vouch-item"><strong>ZeroHour</strong> — won nitro, fast and legit</span>
+      <span class="vouch-item"><strong>PhantomRift</strong> — 100M quickdrop, no issues</span>
+      <span class="vouch-item"><strong>SilverBolt</strong> — Void Market is unmatched 🔥</span>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo"><span>V</span>OID MARKET</div>
+  <div class="footer-copy">© 2025 Void Market · DonutSMP Community · Not affiliated with DonutSMP officially.</div>
+  <div class="footer-links">
+    <a href="https://discord.gg/6uFqUjct" target="_blank">Discord</a>
+    <a href="#giveaways">Giveaways</a>
+    <a href="#quickdrops">Quickdrops</a>
+    <a href="#trust">Trust</a>
+  </div>
+</footer>
+
+<script>
+  // ── Custom cursor
+  const cursor = document.getElementById('cursor');
+  const dot = document.getElementById('cursorDot');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+    dot.style.left = e.clientX + 'px';
+    dot.style.top = e.clientY + 'px';
+  });
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => { cursor.style.transform = 'translate(-50%,-50%) scale(1.8)'; cursor.style.background = 'rgba(155,48,255,0.15)'; });
+    el.addEventListener('mouseleave', () => { cursor.style.transform = 'translate(-50%,-50%) scale(1)'; cursor.style.background = 'transparent'; });
+  });
+
+  // ── Star canvas
+  const canvas = document.getElementById('stars-canvas');
+  const ctx = canvas.getContext('2d');
+  let stars = [];
+  function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+  resize();
+  window.addEventListener('resize', resize);
+  for (let i = 0; i < 220; i++) {
+    stars.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 1.2,
+      a: Math.random(),
+      speed: Math.random() * 0.003 + 0.001,
+      hue: Math.random() > 0.7 ? 280 : 220
+    });
+  }
+  function drawStars() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    stars.forEach(s => {
+      s.a += s.speed;
+      const alpha = (Math.sin(s.a) + 1) / 2 * 0.8 + 0.1;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `hsla(${s.hue}, 80%, 80%, ${alpha})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(drawStars);
+  }
+  drawStars();
+
+  // ── Smooth scroll for all anchors
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+    });
+  });
+</script>
+</body>
+</html>
