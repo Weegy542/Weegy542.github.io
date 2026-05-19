@@ -9,7 +9,7 @@
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="X-Frame-Options" content="DENY">
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline'; connect-src 'self' https://weegy542.github.io;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://i.ibb.co; connect-src 'self' https://weegy542.github.io;">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -36,11 +36,12 @@
             .glow-bg { background: radial-gradient(circle at top, #222222 0%, #000000 70%); }
             .mode-glow { box-shadow: 0 0 6px #ff000080, 0 0 12px #ff000040; }
             .title-glow { text-shadow: 0 0 4px #ff0000, 0 0 8px #ff0000; }
-            .tier-glow { box-shadow: 0 0 4px #88888870; }
+            .tier-tag { background: #444; padding: 2px 8px; border-radius: 4px; font-size: 0.8em; box-shadow: 0 0 3px #88888870; }
             .search-glow { box-shadow: 0 0 5px #ff000090; }
             .rank-1 { color: #ffd700; font-weight: bold; text-shadow: 0 0 3px #ffd70080; }
             .rank-2 { color: #c0c0c0; font-weight: bold; text-shadow: 0 0 3px #c0c0c080; }
             .rank-3 { color: #cd7f32; font-weight: bold; text-shadow: 0 0 3px #cd7f3280; }
+            .logo-glow { filter: drop-shadow(0 0 8px #ff0000) drop-shadow(0 0 15px #ff2222); }
         }
     </style>
 </head>
@@ -50,12 +51,22 @@
 <div class="fixed top-2 left-2 z-50 w-[calc(100%-16px)]">
     <input type="text" id="searchInput" placeholder="Search IGN..." maxlength="32" class="w-full bg-black border border-redGlow rounded py-2 px-3 text-base text-white outline-none search-glow">
 </div>
-<div class="h-14"></div>
+<div class="h-16"></div>
 
-<!-- 🎮 GAMEMODES - VERY TOP, STRAIGHT LINE, GLOW -->
+<!-- 🖼️ LOGO AT VERY TOP -->
+<div class="flex justify-center py-4">
+    <img 
+        src="https://i.ibb.co/93q5X2y/tiers-logo.png" 
+        alt="MCBE Geyser Tiers" 
+        class="w-40 h-40 object-contain logo-glow"
+        loading="lazy"
+    >
+</div>
+
+<!-- 🎮 GAMEMODES -->
 <div class="px-2 py-3 overflow-x-auto">
     <div class="flex flex-row gap-2">
-        <button class="mode-btn bg-[#181818] px-3 py-2 rounded text-sm whitespace-nowrap mode-glow hover:bg-red-900" data-mode="NethOP">NethOP</button>
+        <button class="mode-btn bg-red-900 px-3 py-2 rounded text-sm whitespace-nowrap mode-glow" data-mode="NethOP">NethOP</button>
         <button class="mode-btn bg-[#181818] px-3 py-2 rounded text-sm whitespace-nowrap mode-glow hover:bg-red-900" data-mode="DiaSMP">DiaSMP</button>
         <button class="mode-btn bg-[#181818] px-3 py-2 rounded text-sm whitespace-nowrap mode-glow hover:bg-red-900" data-mode="UHC">UHC</button>
         <button class="mode-btn bg-[#181818] px-3 py-2 rounded text-sm whitespace-nowrap mode-glow hover:bg-red-900" data-mode="SMP">SMP</button>
@@ -68,28 +79,12 @@
 </div>
 
 <!-- 📝 TITLE -->
-<div class="px-3 py-3">
+<div class="px-3 py-3 text-center">
     <h1 class="text-xl font-bold text-black title-glow">MCBE Geyser Tierlist</h1>
 </div>
 
-<!-- 🟶 TIERS -->
-<div class="px-2 py-3 overflow-x-auto border-y border-gray-800">
-    <div class="flex flex-row gap-2">
-        <div class="bg-tierGrey text-black font-bold px-3 py-2 rounded min-w-[60px] text-center tier-glow">LT5</div>
-        <div class="bg-tierGrey text-black font-bold px-3 py-2 rounded min-w-[60px] text-center tier-glow">HT5</div>
-        <div class="bg-tierGrey text-black font-bold px-3 py-2 rounded min-w-[60px] text-center tier-glow">LT4</div>
-        <div class="bg-tierGrey text-black font-bold px-3 py-2 rounded min-w-[60px] text-center tier-glow">HT4</div>
-        <div class="bg-tierGrey text-black font-bold px-3 py-2 rounded min-w-[60px] text-center tier-glow">LT3</div>
-        <div class="bg-tierGrey text-black font-bold px-3 py-2 rounded min-w-[60px] text-center tier-glow">HT3</div>
-        <div class="bg-tierGrey text-black font-bold px-3 py-2 rounded min-w-[60px] text-center tier-glow">LT2</div>
-        <div class="bg-tierGrey text-black font-bold px-3 py-2 rounded min-w-[60px] text-center tier-glow">HT2</div>
-        <div class="bg-tierGrey text-black font-bold px-3 py-2 rounded min-w-[60px] text-center tier-glow">LT1</div>
-        <div class="bg-tierGrey text-black font-bold px-3 py-2 rounded min-w-[60px] text-center tier-glow">HT1</div>
-    </div>
-</div>
-
-<!-- 🏆 LEADERBOARD WITH RANKS -->
-<div class="px-2 py-4">
+<!-- 🏆 LEADERBOARD - TIERS NEXT TO PLAYERS LIKE MCTIERS ✅ -->
+<div class="px-3 py-4">
     <div id="leaderboard" class="space-y-3 text-base"></div>
 </div>
 
@@ -128,36 +123,39 @@ function renderBoard() {
     const mode = data.modes?.[currentMode];
     if(!mode) { container.innerHTML = `<div class="text-gray-400 p-3 text-center">No data available</div>`; return; }
 
+    // Combine all tiers and players
+    const allPlayers = [];
     tierOrder.forEach(tier => {
         const players = mode.tiers?.[tier]?.players || [];
-        const safeTier = safe(tier);
-
-        const row = document.createElement("div");
-        row.className = "bg-[#0a0a0a] border border-gray-700 rounded p-3 hover:bg-[#150505] cursor-pointer";
-        
-        let playersHtml = "";
-        players.forEach((p, index) => {
-            const rank = index + 1;
-            const ign = safe(p.ign || p.displayName);
-            let rankClass = "";
-            if(rank === 1) rankClass = "rank-1";
-            else if(rank === 2) rankClass = "rank-2";
-            else if(rank === 3) rankClass = "rank-3";
-            else rankClass = "text-white";
-
-            playersHtml += `<div class="${rankClass} py-1">#${rank} ${ign}</div>`;
+        players.forEach(p => {
+            allPlayers.push({
+                ign: safe(p.ign || p.displayName),
+                tier: safe(tier)
+            });
         });
+    });
 
-        row.innerHTML = `
-            <div class="flex items-center justify-between">
-                <span class="bg-tierGrey text-black font-bold px-3 py-1 rounded tier-glow">${safeTier}</span>
-                <span class="text-gray-400 text-sm">${players.length} Players</span>
-            </div>
-            <div class="mt-2 pl-2 border-l border-red-900/40">${playersHtml || `<span class="text-gray-500 italic">No players</span>`}</div>
+    // Show each player with tier tag, like MCTiers
+    if(allPlayers.length === 0) {
+        container.innerHTML = `<div class="text-gray-500 italic text-center py-4">No players in this gamemode</div>`;
+        return;
+    }
+
+    allPlayers.forEach((player, index) => {
+        const rank = index + 1;
+        let rankClass = "";
+        if(rank === 1) rankClass = "rank-1";
+        else if(rank === 2) rankClass = "rank-2";
+        else if(rank === 3) rankClass = "rank-3";
+        else rankClass = "text-white";
+
+        const div = document.createElement("div");
+        div.className = "bg-[#0a0a0a] border border-gray-700 rounded p-3 flex items-center justify-between";
+        div.innerHTML = `
+            <span class="${rankClass}">#${rank} ${player.ign}</span>
+            <span class="tier-tag text-black font-bold">${player.tier}</span>
         `;
-
-        row.onclick = () => openModal(safeTier, players);
-        container.appendChild(row);
+        container.appendChild(div);
     });
 }
 
@@ -177,6 +175,18 @@ function closeModal() {
     document.getElementById("tierModal").style.display = "none";
 }
 
+// Gamemode switcher
+document.querySelectorAll(".mode-btn").forEach(btn => btn.addEventListener("click", () => {
+    document.querySelectorAll(".mode-btn").forEach(b => {
+        b.classList.remove("bg-red-900");
+        b.classList.add("bg-[#181818]");
+    });
+    btn.classList.remove("bg-[#181818]");
+    btn.classList.add("bg-red-900");
+    currentMode = btn.dataset.mode;
+    renderBoard();
+}));
+
 // Search
 document.getElementById("searchInput").addEventListener("input", () => {
     const q = safe(document.getElementById("searchInput").value.toLowerCase().trim());
@@ -184,14 +194,6 @@ document.getElementById("searchInput").addEventListener("input", () => {
         el.classList.toggle("ring-1 ring-yellow-400", el.textContent.toLowerCase().includes(q));
     });
 });
-
-// Gamemode Switch
-document.querySelectorAll(".mode-btn").forEach(btn => btn.addEventListener("click", () => {
-    document.querySelectorAll(".mode-btn").forEach(b => b.classList.remove("bg-red-900"));
-    btn.classList.add("bg-red-900");
-    currentMode = btn.dataset.mode;
-    renderBoard();
-}));
 
 window.onclick = e => e.target === document.getElementById("tierModal") && closeModal();
 
