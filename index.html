@@ -5,21 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MCBE Geyser Tierlist</title>
 
-    <!-- 🔒 SECURITY HEADERS -->
+    <!-- 🔒 SECURITY -->
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="X-Frame-Options" content="DENY">
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
-    <meta http-equiv="Content-Security-Policy" content="
-        default-src 'self';
-        script-src 'self' https://cdn.tailwindcss.com;
-        style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;
-        img-src 'self' https://cdn-icons-png.flaticon.com data:;
-        connect-src 'self' https://weegy542.github.io;
-        frame-src 'none';
-        object-src 'none';
-        base-uri 'self';
-        form-action 'self';
-    ">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline'; connect-src 'self' https://weegy542.github.io;">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -27,190 +17,163 @@
             theme: {
                 extend: {
                     colors: {
-                        bgMain: '#000000',
+                        bg: '#000000',
                         tierGrey: '#444444',
-                        textRed: '#ff0000',
                         textYellow: '#ffcc00',
-                        borderRed: '#8b0000'
-                    },
-                    fontFamily: {
-                        minecraft: ['Segoe UI', 'Arial', 'sans-serif']
+                        textRed: '#ff0000',
+                        border: '#222222'
                     }
                 }
             }
         }
     </script>
-    <style type="text/tailwindcss">
-        @layer utilities {
-            .tier-box {
-                @apply bg-tierGrey text-white px-5 py-2 rounded text-center font-bold border border-gray-600 min-w-[80px];
-            }
-            .player-card {
-                @apply bg-black border border-borderRed hover:bg-red-900 rounded px-3 py-2 m-1 text-sm transition-colors text-white;
-            }
-            .modal {
-                @apply fixed inset-0 bg-black/95 z-50 flex items-center justify-center p-4 hidden;
-            }
-            .modal-content {
-                @apply bg-black rounded-lg w-full max-w-3xl max-h-[80vh] overflow-auto border border-textRed;
-            }
-            .search-highlight {
-                @apply ring-2 ring-textYellow bg-red-900;
-            }
-        }
-    </style>
 </head>
-<body class="bg-bgMain text-gray-100 min-h-screen font-minecraft">
+<body class="bg-bg text-white min-h-screen font-sans">
 
-<!-- 📌 HEADER: Title LEFT ALIGNED, Yellow+Red -->
-<div class="w-full bg-black border-b border-borderRed p-4">
-    <h1 class="text-xl md:text-2xl font-bold text-left">
-        <span class="text-textYellow">MCBE Geyser</span> 
-        <span class="text-textRed">Tierlist</span>
+<!-- 📍 1. GAMEMODES - ALL IN ONE LINE AT TOP -->
+<div class="px-3 py-2 border-b border-border overflow-x-auto">
+    <div class="flex flex-row gap-2">
+        <button class="mode-btn bg-red-900 px-3 py-1 rounded text-sm hover:bg-red-800" data-mode="NethOP">NethOP</button>
+        <button class="mode-btn bg-[#1a1a1a] px-3 py-1 rounded text-sm hover:bg-red-900" data-mode="DiaSMP">DiaSMP</button>
+        <button class="mode-btn bg-[#1a1a1a] px-3 py-1 rounded text-sm hover:bg-red-900" data-mode="UHC">UHC</button>
+        <button class="mode-btn bg-[#1a1a1a] px-3 py-1 rounded text-sm hover:bg-red-900" data-mode="SMP">SMP</button>
+        <button class="mode-btn bg-[#1a1a1a] px-3 py-1 rounded text-sm hover:bg-red-900" data-mode="Axe">Axe</button>
+        <button class="mode-btn bg-[#1a1a1a] px-3 py-1 rounded text-sm hover:bg-red-900" data-mode="Mace">Mace</button>
+        <button class="mode-btn bg-[#1a1a1a] px-3 py-1 rounded text-sm hover:bg-red-900" data-mode="Crystal">Crystal</button>
+        <button class="mode-btn bg-[#1a1a1a] px-3 py-1 rounded text-sm hover:bg-red-900" data-mode="DiaPot">DiaPot</button>
+        <button class="mode-btn bg-[#1a1a1a] px-3 py-1 rounded text-sm hover:bg-red-900" data-mode="Sword">Sword</button>
+    </div>
+</div>
+
+<!-- 📍 2. TITLE -->
+<div class="px-3 py-3">
+    <h1 class="text-xl font-bold">
+        <span class="text-textYellow">MCBE Geyser</span>
+        <span class="text-textRed"> Tierlist</span>
     </h1>
 </div>
 
-<!-- 📌 ALL TIERS IN STRAIGHT LINE AT THE TOP -->
-<div class="w-full bg-black border-b border-borderRed p-3 overflow-x-auto">
-    <div class="flex flex-row gap-3 justify-start">
-        <div class="tier-box">LT5</div>
-        <div class="tier-box">HT5</div>
-        <div class="tier-box">LT4</div>
-        <div class="tier-box">HT4</div>
-        <div class="tier-box">LT3</div>
-        <div class="tier-box">HT3</div>
-        <div class="tier-box">LT2</div>
-        <div class="tier-box">HT2</div>
-        <div class="tier-box">LT1</div>
-        <div class="tier-box">HT1</div>
+<!-- 📍 3. TIERS - STRAIGHT HORIZONTAL LINE -->
+<div class="px-3 py-2 border-y border-border overflow-x-auto">
+    <div class="flex flex-row gap-2">
+        <div class="bg-tierGrey text-white px-3 py-1.5 rounded font-medium text-sm min-w-[50px] text-center">LT5</div>
+        <div class="bg-tierGrey text-white px-3 py-1.5 rounded font-medium text-sm min-w-[50px] text-center">HT5</div>
+        <div class="bg-tierGrey text-white px-3 py-1.5 rounded font-medium text-sm min-w-[50px] text-center">LT4</div>
+        <div class="bg-tierGrey text-white px-3 py-1.5 rounded font-medium text-sm min-w-[50px] text-center">HT4</div>
+        <div class="bg-tierGrey text-white px-3 py-1.5 rounded font-medium text-sm min-w-[50px] text-center">LT3</div>
+        <div class="bg-tierGrey text-white px-3 py-1.5 rounded font-medium text-sm min-w-[50px] text-center">HT3</div>
+        <div class="bg-tierGrey text-white px-3 py-1.5 rounded font-medium text-sm min-w-[50px] text-center">LT2</div>
+        <div class="bg-tierGrey text-white px-3 py-1.5 rounded font-medium text-sm min-w-[50px] text-center">HT2</div>
+        <div class="bg-tierGrey text-white px-3 py-1.5 rounded font-medium text-sm min-w-[50px] text-center">LT1</div>
+        <div class="bg-tierGrey text-white px-3 py-1.5 rounded font-medium text-sm min-w-[50px] text-center">HT1</div>
     </div>
 </div>
 
-<!-- 📌 SEARCH BAR -->
-<div class="w-full bg-black p-4 border-b border-borderRed">
-    <div class="max-w-md">
-        <label class="text-white text-sm mr-2">Search:</label>
-        <input type="text" id="searchInput" placeholder="Player name..." class="w-full px-3 py-2 rounded bg-black border border-textRed text-white focus:outline-none focus:ring-1 focus:ring-textYellow" maxlength="32">
-    </div>
+<!-- 📍 4. SEARCH BAR -->
+<div class="px-3 py-3 border-b border-border">
+    <label class="text-gray-300 text-sm">Search:</label>
+    <input type="text" id="searchInput" placeholder="Player name..." maxlength="32" class="ml-2 w-48 bg-[#111] border border-red-800 rounded px-2 py-1 text-sm text-white outline-none focus:ring-1 focus:ring-textYellow">
 </div>
 
-<!-- 📌 GAMEMODES IN ROWS -->
-<div class="container mx-auto px-4 py-5">
-    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-6">
-        <button class="gamemode-btn bg-red-900 text-white border border-borderRed px-3 py-2 rounded hover:bg-red-800 active" data-mode="NethOP">NethOP</button>
-        <button class="gamemode-btn bg-black text-white border border-borderRed px-3 py-2 rounded hover:bg-red-900" data-mode="DiaSMP">DiaSMP</button>
-        <button class="gamemode-btn bg-black text-white border border-borderRed px-3 py-2 rounded hover:bg-red-900" data-mode="UHC">UHC</button>
-        <button class="gamemode-btn bg-black text-white border border-borderRed px-3 py-2 rounded hover:bg-red-900" data-mode="SMP">SMP</button>
-        <button class="gamemode-btn bg-black text-white border border-borderRed px-3 py-2 rounded hover:bg-red-900" data-mode="Axe">Axe</button>
-        <button class="gamemode-btn bg-black text-white border border-borderRed px-3 py-2 rounded hover:bg-red-900" data-mode="Mace">Mace</button>
-        <button class="gamemode-btn bg-black text-white border border-borderRed px-3 py-2 rounded hover:bg-red-900" data-mode="Crystal">Crystal</button>
-        <button class="gamemode-btn bg-black text-white border border-borderRed px-3 py-2 rounded hover:bg-red-900" data-mode="DiaPot">DiaPot</button>
-        <button class="gamemode-btn bg-black text-white border border-borderRed px-3 py-2 rounded hover:bg-red-900" data-mode="Sword">Sword</button>
-    </div>
-
-    <!-- 📌 LEADERBOARD SECTION -->
-    <h2 class="text-lg font-semibold text-textYellow mb-3">Leaderboard</h2>
-    <div id="leaderboard-container" class="space-y-3">
-        Loading data...
-    </div>
+<!-- 📍 5. LEADERBOARD -->
+<div class="px-3 py-3">
+    <h2 class="text-base font-semibold text-textYellow mb-2">Leaderboard</h2>
+    <div id="leaderboard" class="space-y-2 text-sm">Loading data...</div>
 </div>
 
 <!-- MODAL -->
-<div id="tier-modal" class="modal">
-    <div class="modal-content p-5">
-        <div class="flex justify-between items-center border-b border-textRed pb-3 mb-3">
-            <h3 id="modal-title" class="text-xl font-bold text-textYellow"></h3>
-            <button onclick="closeModal()" class="text-textRed hover:text-red-300 text-xl">&times;</button>
+<div id="tierModal" class="fixed inset-0 bg-black/95 z-50 hidden items-center justify-center p-3">
+    <div class="bg-black w-full max-w-md rounded border border-red-800 p-4">
+        <div class="flex justify-between items-center border-b border-red-800 pb-2 mb-3">
+            <h3 id="modalTitle" class="font-bold text-textYellow"></h3>
+            <button onclick="closeModal()" class="text-textRed text-lg">&times;</button>
         </div>
-        <div id="modal-players" class="flex flex-wrap gap-2"></div>
+        <div id="modalPlayers" class="flex flex-wrap gap-1"></div>
     </div>
 </div>
 
-<footer class="bg-black border-t border-borderRed p-3 text-center text-red-400 text-xs">
+<!-- FOOTER -->
+<div class="px-3 py-3 text-center text-xs text-gray-500 border-t border-border">
     MCBE Geyser Tierlist • Auto Updated
-</footer>
+</div>
 
 <script>
-// 🔒 SECURE DATA HANDLING
-function sanitize(str) {
-    return String(str).replace(/[&<>"'`=\/\\]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','`':'&#x60;','=':'&#x3D;','/':'&#x2F;','\\':'&#x5C;'}[c]));
+// 🔒 Sanitize to prevent hacks
+function safe(str) {
+    return String(str).replace(/[&<>"'`\/\\]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
-const tierOrder = ["LT5", "HT5", "LT4", "HT4", "LT3", "HT3", "LT2", "HT2", "LT1", "HT1"];
-let leaderboardData = {};
+const tierOrder = ["LT5","HT5","LT4","HT4","LT3","HT3","LT2","HT2","LT1","HT1"];
+let data = {};
 let currentMode = "NethOP";
 
+// Load data
 async function loadData() {
     try {
-        const res = await fetch('https://weegy542.github.io/data.json', { cache: 'no-cache' });
-        if (!res.ok) throw new Error("Load failed");
-        leaderboardData = await res.json();
-        renderLeaderboard();
+        const res = await fetch("https://weegy542.github.io/data.json", {cache:"no-cache"});
+        if(!res.ok) throw new Error();
+        data = await res.json();
+        renderBoard();
     } catch {
-        document.getElementById('leaderboard-container').innerHTML = `<div class="text-red-500 p-4">Could not load leaderboard ❌</div>`;
+        document.getElementById("leaderboard").innerHTML = `<span class="text-red-500">Failed to load ❌</span>`;
     }
 }
 
-function renderLeaderboard() {
-    const container = document.getElementById('leaderboard-container');
+// Render leaderboard
+function renderBoard() {
+    const container = document.getElementById("leaderboard");
     container.innerHTML = "";
-    const modeData = leaderboardData.modes?.[currentMode];
-    if (!modeData) { container.innerHTML = `<div class="text-gray-400 p-4">No data available</div>`; return; }
+    const mode = data.modes?.[currentMode];
+    if(!mode) { container.innerHTML = "No data available"; return; }
 
     tierOrder.forEach(tier => {
-        const tierData = modeData.tiers?.[tier] || { players: [] };
-        const safeTier = sanitize(tier);
-        const safePlayers = tierData.players.map(p => sanitize(p.displayName));
+        const players = mode.tiers?.[tier]?.players || [];
+        const safeTier = safe(tier);
+        const safeNames = players.map(p => safe(p.displayName));
 
-        const row = document.createElement('div');
-        row.className = "flex items-center bg-black border border-borderRed rounded p-3 gap-4 hover:bg-red-950 cursor-pointer";
+        const row = document.createElement("div");
+        row.className = "flex items-center bg-[#0a0a0a] border border-red-900 rounded p-2 cursor-pointer hover:bg-[#120202]";
         row.innerHTML = `
-            <div class="bg-tierGrey text-white font-bold px-4 py-1 rounded min-w-[70px] text-center">${safeTier}</div>
-            <div class="flex flex-wrap gap-2 flex-1">
-                ${safePlayers.length > 0 
-                    ? safePlayers.map(name => `<span class="player-card">${name}</span>`).join('')
-                    : `<span class="text-gray-500 italic">No players</span>`
-                }
+            <div class="bg-tierGrey text-white font-bold w-12 text-center rounded py-1 mr-3">${safeTier}</div>
+            <div class="flex flex-wrap gap-1">
+                ${safeNames.length ? safeNames.map(n => `<span class="bg-[#1a1a1a] border border-red-800 rounded px-2 py-0.5 text-xs">${n}</span>`).join("") : `<span class="text-gray-500 italic">No players</span>`}
             </div>
         `;
-        row.onclick = () => openModal(safeTier, safePlayers);
+        row.onclick = () => openModal(safeTier, safeNames);
         container.appendChild(row);
     });
 }
 
 function openModal(tier, players) {
-    document.getElementById('modal-title').textContent = `${tier} Players`;
-    document.getElementById('modal-players').innerHTML = players.length 
-        ? players.map(n => `<span class="player-card">${n}</span>`).join('')
-        : `<span class="text-gray-400">No players</span>`;
-    document.getElementById('tier-modal').style.display = "flex";
+    document.getElementById("modalTitle").textContent = `${tier} Players`;
+    document.getElementById("modalPlayers").innerHTML = players.length ? players.map(n => `<span class="bg-[#1a1a1a] border border-red-800 rounded px-2 py-1 text-xs">${n}</span>`).join("") : `<span class="text-gray-400">No players</span>`;
+    document.getElementById("tierModal").style.display = "flex";
 }
-
 function closeModal() {
-    document.getElementById('tier-modal').style.display = "none";
+    document.getElementById("tierModal").style.display = "none";
 }
 
-// Search function
-document.getElementById('searchInput').addEventListener('input', () => {
-    const q = sanitize(document.getElementById('searchInput').value.trim().toLowerCase());
-    document.querySelectorAll('.player-card').forEach(c => {
-        c.classList.toggle('search-highlight', c.textContent.toLowerCase().includes(q));
+// Search
+document.getElementById("searchInput").addEventListener("input", () => {
+    const q = safe(document.getElementById("searchInput").value.toLowerCase().trim());
+    document.querySelectorAll("#leaderboard span, #modalPlayers span").forEach(el => {
+        el.classList.toggle("ring-1 ring-textYellow bg-red-900", el.textContent.toLowerCase().includes(q));
     });
 });
 
-// Gamemode selection
-document.querySelectorAll('.gamemode-btn').forEach(btn => btn.addEventListener('click', () => {
-    document.querySelectorAll('.gamemode-btn').forEach(b => b.classList.remove('bg-red-900','text-white'), b.classList.add('bg-black'));
-    btn.classList.remove('bg-black'); btn.classList.add('bg-red-900','text-white');
+// Gamemode switch
+document.querySelectorAll(".mode-btn").forEach(btn => btn.addEventListener("click", () => {
+    document.querySelectorAll(".mode-btn").forEach(b => b.classList.remove("bg-red-900"), b.classList.add("bg-[#1a1a1a]"));
+    btn.classList.remove("bg-[#1a1a1a]"); btn.classList.add("bg-red-900");
     currentMode = btn.dataset.mode;
-    renderLeaderboard();
+    renderBoard();
 }));
 
-window.addEventListener('click', e => { if (e.target === document.getElementById('tier-modal')) closeModal(); });
+window.onclick = e => e.target === document.getElementById("tierModal") && closeModal();
 
-// Load data every 10 mins
 loadData();
 setInterval(loadData, 600000);
 </script>
+
 </body>
 </html>
