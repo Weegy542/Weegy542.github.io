@@ -30,13 +30,19 @@
     <style type="text/tailwindcss">
         @layer utilities {
             .tier-row {
-                @apply flex flex-wrap md:flex-nowrap items-center rounded-md mb-3 overflow-hidden border border-gray-700;
+                @apply flex flex-wrap md:flex-nowrap items-center rounded-md mb-3 overflow-hidden border border-gray-700 cursor-pointer transition hover:brightness-110;
             }
             .tier-label {
-                @apply w-24 h-16 flex items-center justify-center font-bold text-xl shrink-0;
+                @apply w-28 h-16 flex items-center justify-center font-bold text-lg shrink-0;
             }
             .player-card {
-                @apply bg-gray-800 hover:bg-gray-700 rounded px-3 py-1.5 m-1 text-sm transition-colors cursor-default;
+                @apply bg-gray-800 hover:bg-gray-700 rounded px-3 py-1.5 m-1 text-sm transition-colors;
+            }
+            .modal {
+                @apply fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 hidden;
+            }
+            .modal-content {
+                @apply bg-dark rounded-lg w-full max-w-2xl max-h-[80vh] overflow-auto border border-gray-700;
             }
         }
     </style>
@@ -49,47 +55,73 @@
         <h1 class="text-2xl md:text-3xl font-bold text-white flex items-center gap-2">
             <i class="fa fa-cube text-primary"></i> MCBE Geyser Tierlist
         </h1>
-        <div class="text-gray-400 text-sm">
-            <span>Auto-updated • Powered by Discord Bot</span>
+        <div class="text-gray-300 text-sm">
+            Weegy542.github.io • Points Based Leaderboard
         </div>
     </div>
 </header>
 
 <!-- Main Content -->
-<div class="container mx-auto px-4 py-8">
+<div class="container mx-auto px-4 py-6">
 
     <!-- Gamemode Navigation -->
-    <div class="mb-8 flex flex-wrap gap-3">
-        <button class="gamemode-btn bg-primary/20 text-primary border border-primary/40 px-4 py-2 rounded hover:bg-primary/30 active transition" data-mode="NethOP">NethOP</button>
-        <button class="gamemode-btn bg-gray-800 px-4 py-2 rounded hover:bg-gray-700 transition" data-mode="DiaSMP">DiaSMP</button>
-        <button class="gamemode-btn bg-gray-800 px-4 py-2 rounded hover:bg-gray-700 transition" data-mode="UHC">UHC</button>
-        <button class="gamemode-btn bg-gray-800 px-4 py-2 rounded hover:bg-gray-700 transition" data-mode="SMP">SMP</button>
-        <button class="gamemode-btn bg-gray-800 px-4 py-2 rounded hover:bg-gray-700 transition" data-mode="Axe">Axe</button>
-        <button class="gamemode-btn bg-gray-800 px-4 py-2 rounded hover:bg-gray-700 transition" data-mode="Mace">Mace</button>
-        <button class="gamemode-btn bg-gray-800 px-4 py-2 rounded hover:bg-gray-700 transition" data-mode="Crystal">Crystal</button>
-        <button class="gamemode-btn bg-gray-800 px-4 py-2 rounded hover:bg-gray-700 transition" data-mode="DiaPot">DiaPot</button>
-        <button class="gamemode-btn bg-gray-800 px-4 py-2 rounded hover:bg-gray-700 transition" data-mode="Sword">Sword</button>
+    <div class="mb-6 flex flex-wrap gap-2">
+        <button class="gamemode-btn bg-primary/20 text-primary border border-primary/40 px-3 py-2 rounded hover:bg-primary/30 active transition text-sm" data-mode="NethOP">NethOP</button>
+        <button class="gamemode-btn bg-gray-800 px-3 py-2 rounded hover:bg-gray-700 transition text-sm" data-mode="DiaSMP">DiaSMP</button>
+        <button class="gamemode-btn bg-gray-800 px-3 py-2 rounded hover:bg-gray-700 transition text-sm" data-mode="UHC">UHC</button>
+        <button class="gamemode-btn bg-gray-800 px-3 py-2 rounded hover:bg-gray-700 transition text-sm" data-mode="SMP">SMP</button>
+        <button class="gamemode-btn bg-gray-800 px-3 py-2 rounded hover:bg-gray-700 transition text-sm" data-mode="Axe">Axe</button>
+        <button class="gamemode-btn bg-gray-800 px-3 py-2 rounded hover:bg-gray-700 transition text-sm" data-mode="Mace">Mace</button>
+        <button class="gamemode-btn bg-gray-800 px-3 py-2 rounded hover:bg-gray-700 transition text-sm" data-mode="Crystal">Crystal</button>
+        <button class="gamemode-btn bg-gray-800 px-3 py-2 rounded hover:bg-gray-700 transition text-sm" data-mode="DiaPot">DiaPot</button>
+        <button class="gamemode-btn bg-gray-800 px-3 py-2 rounded hover:bg-gray-700 transition text-sm" data-mode="Sword">Sword</button>
     </div>
 
     <!-- Info Bar -->
-    <div id="info-bar" class="mb-4 text-gray-300 text-sm">
-        Last updated: <span id="last-updated">Loading...</span>
+    <div class="mb-4 flex flex-wrap justify-between items-center text-gray-300 text-sm">
+        <span>Last Updated: <span id="last-updated">Loading...</span></span>
+        <span>Points: LT5=1 | HT5=2 | LT4=3 | HT4=4 | LT3=6 | HT3=10 | LT2=20 | HT2=30 | LT1=45 | HT1=60</span>
     </div>
 
-    <!-- Tier List Display -->
-    <div id="tier-container" class="space-y-2">
-        Loading tiers...
+    <!-- Leaderboard Section -->
+    <div id="leaderboard-container" class="space-y-3">
+        Loading ranks...
     </div>
 
 </div>
 
+<!-- Clickable Tier Popup -->
+<div id="tier-modal" class="modal">
+    <div class="modal-content p-5">
+        <div class="flex justify-between items-center border-b border-gray-700 pb-3 mb-4">
+            <h3 id="modal-title" class="text-xl font-bold"></h3>
+            <button onclick="closeModal()" class="text-gray-400 hover:text-white text-xl">&times;</button>
+        </div>
+        <div id="modal-players" class="flex flex-wrap gap-3"></div>
+    </div>
+</div>
+
 <!-- Footer -->
-<footer class="bg-dark border-t border-gray-800 py-5 text-center text-gray-500 text-sm">
-    © 2026 MCBE Geyser Tierlist | All ranks verified & synced with Discord
+<footer class="bg-dark border-t border-gray-800 py-4 text-center text-gray-500 text-sm">
+    © 2026 MCBE Geyser Tierlist • Updated automatically via Discord Bot
 </footer>
 
 <script>
-// Your full role & tier data
+// ✅ YOUR EXACT POINT SYSTEM
+const tierPoints = {
+    "LT5": 1,
+    "HT5": 2,
+    "LT4": 3,
+    "HT4": 4,
+    "LT3": 6,
+    "HT3": 10,
+    "LT2": 20,
+    "HT2": 30,
+    "LT1": 45,
+    "HT1": 60
+};
+
+// ✅ All Tier & Role IDs
 const tierConfig = {
     "NethOP": {
         "LT5": { color: "#FF5555", roleId: "1408952062149918834" },
@@ -159,16 +191,4 @@ const tierConfig = {
         "LT3": { color: "#FFFF55", roleId: "1409172042196058152" },
         "HT3": { color: "#FFFF77", roleId: "1409171535759016046" },
         "LT2": { color: "#55FF55", roleId: "1409171311993032926" },
-        "HT2": { color: "#77FF77", roleId: "1409170887776927744" },
-        "LT1": { color: "#5599FF", roleId: "1409167446035927130" },
-        "HT1": { color: "#77BBFF", roleId: "1409166434516340816" }
-    },
-    "Crystal": {
-        "LT5": { color: "#FF5555", roleId: "1409549946704756837" },
-        "HT5": { color: "#FF6666", roleId: "1409549823635493015" },
-        "LT4": { color: "#FFAA00", roleId: "1409549709726584966" },
-        "HT4": { color: "#FFBB22", roleId: "1408952043774804121" },
-        "LT3": { color: "#FFFF55", roleId: "1409171939624222861" },
-        "HT3": { color: "#FFFF77", roleId: "1409171437708771338" },
-        "LT2": { color: "#55FF55", roleId: "1409171019653976196" },
-        "HT2": { color: "#77FF77", roleId: "140917055210664764
+        "HT2": { color: "#77FF77", roleId: "14091708
