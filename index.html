@@ -4,6 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MCBE Geyser Tierlist</title>
+
+    <!-- 🔒 SECURITY HEADERS -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self' https://cdn.tailwindcss.com;
+        style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;
+        img-src 'self' https://cdn-icons-png.flaticon.com data:;
+        connect-src 'self' https://weegy542.github.io;
+        frame-src 'none';
+        object-src 'none';
+        base-uri 'self';
+        form-action 'self';
+    ">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <script>
@@ -11,14 +28,14 @@
             theme: {
                 extend: {
                     colors: {
-                        dark: '#0E0E12',
-                        darker: '#08080A',
-                        primary: '#3498DB',
-                        tier5: '#FF5555',
-                        tier4: '#FFAA00',
-                        tier3: '#FFFF55',
-                        tier2: '#55FF55',
-                        tier1: '#5599FF'
+                        dark: '#000000',
+                        darker: '#050505',
+                        primary: '#ff0000',
+                        tier5: '#ff0000',
+                        tier4: '#ff2222',
+                        tier3: '#ff4444',
+                        tier2: '#ff6666',
+                        tier1: '#ff8888'
                     },
                     fontFamily: {
                         minecraft: ['Segoe UI', 'Roboto', 'sans-serif']
@@ -30,165 +47,195 @@
     <style type="text/tailwindcss">
         @layer utilities {
             .tier-row {
-                @apply flex flex-wrap md:flex-nowrap items-center rounded-md mb-3 overflow-hidden border border-gray-700 cursor-pointer transition hover:brightness-110;
+                @apply flex flex-wrap md:flex-nowrap items-center rounded-md mb-3 overflow-hidden border border-red-800 cursor-pointer transition hover:brightness-125;
             }
             .tier-label {
-                @apply w-28 h-16 flex items-center justify-center font-bold text-lg shrink-0;
+                @apply w-28 h-16 flex items-center justify-center font-bold text-lg shrink-0 bg-black text-white border-r border-red-700;
             }
             .player-card {
-                @apply bg-gray-800 hover:bg-gray-700 rounded px-3 py-1.5 m-1 text-sm transition-colors;
+                @apply bg-black border border-red-700 hover:bg-red-900 rounded px-3 py-1.5 m-1 text-sm transition-colors text-white;
             }
             .modal {
-                @apply fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 hidden;
+                @apply fixed inset-0 bg-black/95 z-50 flex items-center justify-center p-4 hidden;
             }
             .modal-content {
-                @apply bg-dark rounded-lg w-full max-w-2xl max-h-[80vh] overflow-auto border border-gray-700;
+                @apply bg-black rounded-lg w-full max-w-2xl max-h-[80vh] overflow-auto border border-red-600;
+            }
+            .search-highlight {
+                @apply ring-2 ring-red-500 bg-red-900;
             }
         }
     </style>
 </head>
 <body class="bg-darker text-gray-100 min-h-screen font-minecraft">
 
-<!-- Header -->
-<header class="bg-dark border-b border-gray-800 py-5">
-    <div class="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-3">
-        <h1 class="text-2xl md:text-3xl font-bold text-white flex items-center gap-2">
-            <i class="fa fa-cube text-primary"></i> MCBE Geyser Tierlist
-        </h1>
-        <div class="text-gray-300 text-sm">
-            Weegy542.github.io • Points Based Leaderboard
+<!-- Header with Logo -->
+<header class="bg-black border-b border-red-700 py-6">
+    <div class="container mx-auto px-4 flex flex-col items-center gap-4">
+        <img src="https://cdn-icons-png.flaticon.com/512/1159/1159621.png" alt="MCBE Geyser Logo" class="w-24 h-24 object-contain">
+        <h1 class="text-3xl md:text-4xl font-bold text-red-600 text-center">MCBE Geyser Tierlist</h1>
+        
+        <!-- Search Bar -->
+        <div class="w-full max-w-lg mt-2">
+            <input type="text" id="searchInput" placeholder="Search player IGN..." class="w-full px-4 py-3 rounded bg-black border border-red-600 text-white text-lg focus:outline-none focus:ring-2 focus:ring-red-500" maxlength="32">
         </div>
     </div>
 </header>
 
-<!-- Main Content -->
-<div class="container mx-auto px-4 py-6">
-
-    <!-- Gamemode Navigation -->
-    <div class="mb-6 flex flex-wrap gap-2">
-        <button class="gamemode-btn bg-primary/20 text-primary border border-primary/40 px-3 py-2 rounded hover:bg-primary/30 active transition text-sm" data-mode="NethOP">NethOP</button>
-        <button class="gamemode-btn bg-gray-800 px-3 py-2 rounded hover:bg-gray-700 transition text-sm" data-mode="DiaSMP">DiaSMP</button>
-        <button class="gamemode-btn bg-gray-800 px-3 py-2 rounded hover:bg-gray-700 transition text-sm" data-mode="UHC">UHC</button>
-        <button class="gamemode-btn bg-gray-800 px-3 py-2 rounded hover:bg-gray-700 transition text-sm" data-mode="SMP">SMP</button>
-        <button class="gamemode-btn bg-gray-800 px-3 py-2 rounded hover:bg-gray-700 transition text-sm" data-mode="Axe">Axe</button>
-        <button class="gamemode-btn bg-gray-800 px-3 py-2 rounded hover:bg-gray-700 transition text-sm" data-mode="Mace">Mace</button>
-        <button class="gamemode-btn bg-gray-800 px-3 py-2 rounded hover:bg-gray-700 transition text-sm" data-mode="Crystal">Crystal</button>
-        <button class="gamemode-btn bg-gray-800 px-3 py-2 rounded hover:bg-gray-700 transition text-sm" data-mode="DiaPot">DiaPot</button>
-        <button class="gamemode-btn bg-gray-800 px-3 py-2 rounded hover:bg-gray-700 transition text-sm" data-mode="Sword">Sword</button>
+<!-- Gamemodes in Rows -->
+<div class="container mx-auto px-4 py-8">
+    <div class="mb-8 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+        <button class="gamemode-btn bg-red-900 text-white border border-red-700 px-4 py-3 rounded-lg font-medium hover:bg-red-800 active transition" data-mode="NethOP">NethOP</button>
+        <button class="gamemode-btn bg-black text-white border border-red-800 px-4 py-3 rounded-lg font-medium hover:bg-red-900 transition" data-mode="DiaSMP">DiaSMP</button>
+        <button class="gamemode-btn bg-black text-white border border-red-800 px-4 py-3 rounded-lg font-medium hover:bg-red-900 transition" data-mode="UHC">UHC</button>
+        <button class="gamemode-btn bg-black text-white border border-red-800 px-4 py-3 rounded-lg font-medium hover:bg-red-900 transition" data-mode="SMP">SMP</button>
+        <button class="gamemode-btn bg-black text-white border border-red-800 px-4 py-3 rounded-lg font-medium hover:bg-red-900 transition" data-mode="Axe">Axe</button>
+        <button class="gamemode-btn bg-black text-white border border-red-800 px-4 py-3 rounded-lg font-medium hover:bg-red-900 transition" data-mode="Mace">Mace</button>
+        <button class="gamemode-btn bg-black text-white border border-red-800 px-4 py-3 rounded-lg font-medium hover:bg-red-900 transition" data-mode="Crystal">Crystal</button>
+        <button class="gamemode-btn bg-black text-white border border-red-800 px-4 py-3 rounded-lg font-medium hover:bg-red-900 transition" data-mode="DiaPot">DiaPot</button>
+        <button class="gamemode-btn bg-black text-white border border-red-800 px-4 py-3 rounded-lg font-medium hover:bg-red-900 transition" data-mode="Sword">Sword</button>
     </div>
 
     <!-- Info Bar -->
-    <div class="mb-4 flex flex-wrap justify-between items-center text-gray-300 text-sm">
+    <div class="mb-6 bg-black p-4 rounded-lg border border-red-800 flex flex-wrap justify-between items-center gap-2 text-red-300 text-sm md:text-base">
         <span>Last Updated: <span id="last-updated">Loading...</span></span>
         <span>Points: LT5=1 | HT5=2 | LT4=3 | HT4=4 | LT3=6 | HT3=10 | LT2=20 | HT2=30 | LT1=45 | HT1=60</span>
     </div>
 
-    <!-- Leaderboard Section -->
-    <div id="leaderboard-container" class="space-y-3">
-        Loading ranks...
-    </div>
-
+    <!-- Leaderboard -->
+    <div id="leaderboard-container" class="space-y-4">Loading ranks...</div>
 </div>
 
-<!-- Clickable Tier Popup -->
+<!-- Modal -->
 <div id="tier-modal" class="modal">
-    <div class="modal-content p-5">
-        <div class="flex justify-between items-center border-b border-gray-700 pb-3 mb-4">
-            <h3 id="modal-title" class="text-xl font-bold"></h3>
-            <button onclick="closeModal()" class="text-gray-400 hover:text-white text-xl">&times;</button>
+    <div class="modal-content p-6">
+        <div class="flex justify-between items-center border-b border-red-700 pb-4 mb-4">
+            <h3 id="modal-title" class="text-2xl font-bold text-red-500"></h3>
+            <button onclick="closeModal()" class="text-red-400 hover:text-red-200 text-2xl font-bold">&times;</button>
         </div>
         <div id="modal-players" class="flex flex-wrap gap-3"></div>
     </div>
 </div>
 
-<!-- Footer -->
-<footer class="bg-dark border-t border-gray-800 py-4 text-center text-gray-500 text-sm">
-    © 2026 MCBE Geyser Tierlist • Updated automatically via Discord Bot
+<footer class="bg-black border-t border-red-700 py-5 text-center text-red-400 text-sm">
+    © 2026 MCBE Geyser Tierlist • Data updates automatically
 </footer>
 
 <script>
-// ✅ YOUR EXACT POINT SYSTEM
-const tierPoints = {
-    "LT5": 1,
-    "HT5": 2,
-    "LT4": 3,
-    "HT4": 4,
-    "LT3": 6,
-    "HT3": 10,
-    "LT2": 20,
-    "HT2": 30,
-    "LT1": 45,
-    "HT1": 60
+// ✅ YOUR POINTS SYSTEM
+const tierPoints = { "LT5":1, "HT5":2, "LT4":3, "HT4":4, "LT3":6, "HT3":10, "LT2":20, "HT2":30, "LT1":45, "HT1":60 };
+
+// ✅ TIER COLORS
+const tierColors = {
+    "LT5": "#ff0000", "HT5": "#ff2222", "LT4": "#ff3333", "HT4": "#ff4444",
+    "LT3": "#ff5555", "HT3": "#ff6666", "LT2": "#ff7777", "HT2": "#ff8888",
+    "LT1": "#ff9999", "HT1": "#ffaaaa"
 };
 
-// ✅ All Tier & Role IDs
-const tierConfig = {
-    "NethOP": {
-        "LT5": { color: "#FF5555", roleId: "1408952062149918834" },
-        "HT5": { color: "#FF6666", roleId: "1408952055162339408" },
-        "LT4": { color: "#FFAA00", roleId: "1408952049353363566" },
-        "HT4": { color: "#FFBB22", roleId: "1408952042612985936" },
-        "LT3": { color: "#FFFF55", roleId: "1408952036854206576" },
-        "HT3": { color: "#FFFF77", roleId: "1408952029740793986" },
-        "LT2": { color: "#55FF55", roleId: "1408952023478566912" },
-        "HT2": { color: "#77FF77", roleId: "1408952017837363281" },
-        "LT1": { color: "#5599FF", roleId: "1408952010421571805" },
-        "HT1": { color: "#77BBFF", roleId: "1408952002893053962" }
-    },
-    "DiaSMP": {
-        "LT5": { color: "#FF5555", roleId: "1458331683622354956" },
-        "HT5": { color: "#FF6666", roleId: "1458331596636557395" },
-        "LT4": { color: "#FFAA00", roleId: "1458331517422927954" },
-        "HT4": { color: "#FFBB22", roleId: "1458331357133410325" },
-        "LT3": { color: "#FFFF55", roleId: "1458331141374349353" },
-        "HT3": { color: "#FFFF77", roleId: "1458330742911406262" },
-        "LT2": { color: "#55FF55", roleId: "1458330640125661228" },
-        "HT2": { color: "#77FF77", roleId: "1458330488941973649" },
-        "LT1": { color: "#5599FF", roleId: "1458330368787746846" },
-        "HT1": { color: "#77BBFF", roleId: "1408952007896596500" }
-    },
-    "UHC": {
-        "LT5": { color: "#FF5555", roleId: "1408952063815319614" },
-        "HT5": { color: "#FF6666", roleId: "1408952058215927818" },
-        "LT4": { color: "#FFAA00", roleId: "1408952050984681567" },
-        "HT4": { color: "#FFBB22", roleId: "1408952045104529509" },
-        "LT3": { color: "#FFFF55", roleId: "1408952038775062598" },
-        "HT3": { color: "#FFFF77", roleId: "1408952032014110780" },
-        "LT2": { color: "#55FF55", roleId: "1408952025273602160" },
-        "HT2": { color: "#77FF77", roleId: "1408952019636719829" },
-        "LT1": { color: "#5599FF", roleId: "1408952012221190234" },
-        "HT1": { color: "#77BBFF", roleId: "1408952005174755389" }
-    },
-    "SMP": {
-        "LT5": { color: "#FF5555", roleId: "1408952060916797463" },
-        "HT5": { color: "#FF6666", roleId: "1408952054097121361" },
-        "LT4": { color: "#FFAA00", roleId: "1470121626002526249" },
-        "HT4": { color: "#FFBB22", roleId: "1408952041673326702" },
-        "LT3": { color: "#FFFF55", roleId: "1408952035948101672" },
-        "HT3": { color: "#FFFF77", roleId: "1408952028004225057" },
-        "LT2": { color: "#55FF55", roleId: "1408952022148976725" },
-        "HT2": { color: "#77FF77", roleId: "1492316333227118764" },
-        "LT1": { color: "#5599FF", roleId: "1408952008932724798" },
-        "HT1": { color: "#77BBFF", roleId: "1408952002024702039" }
-    },
-    "Axe": {
-        "LT5": { color: "#FF5555", roleId: "1408952065140588544" },
-        "HT5": { color: "#FF6666", roleId: "1408952059222298674" },
-        "LT4": { color: "#FFAA00", roleId: "1408952052326858864" },
-        "HT4": { color: "#FFBB22", roleId: "1408952046085738508" },
-        "LT3": { color: "#FFFF55", roleId: "1408952035948101672" },
-        "HT3": { color: "#FFFF77", roleId: "1408952033431654410" },
-        "LT2": { color: "#55FF55", roleId: "1408952026011930746" },
-        "HT2": { color: "#77FF77", roleId: "1408952020647542854" },
-        "LT1": { color: "#5599FF", roleId: "1408952013168836753" },
-        "HT1": { color: "#77BBFF", roleId: "1408952006630047764" }
-    },
-    "Mace": {
-        "LT5": { color: "#FF5555", roleId: "1409549980296937623" },
-        "HT5": { color: "#FF6666", roleId: "1409549866304143461" },
-        "LT4": { color: "#FFAA00", roleId: "1409549768832843920" },
-        "HT4": { color: "#FFBB22", roleId: "1409549585554214982" },
-        "LT3": { color: "#FFFF55", roleId: "1409172042196058152" },
-        "HT3": { color: "#FFFF77", roleId: "1409171535759016046" },
-        "LT2": { color: "#55FF55", roleId: "1409171311993032926" },
-        "HT2": { color: "#77FF77", roleId: "14091708
+let leaderboardData = {};
+let currentMode = "NethOP";
+
+// 🔒 SANITIZE INPUT TO PREVENT HACKS
+function sanitize(str) {
+    return String(str).replace(/[&<>"'`=\/\\]/g, function(char) {
+        return {
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;',
+            "'": '&#39;', '`': '&#x60;', '=': '&#x3D;', '/': '&#x2F;', '\\': '&#x5C;'
+        }[char];
+    });
+}
+
+// Load data safely
+async function loadData() {
+    try {
+        const res = await fetch('https://weegy542.github.io/data.json', { cache: 'no-cache' });
+        if (!res.ok) throw new Error("Data load failed");
+        leaderboardData = await res.json();
+        document.getElementById('last-updated').textContent = new Date(leaderboardData.lastUpdated).toLocaleString();
+        renderLeaderboard();
+    } catch (err) {
+        document.getElementById('leaderboard-container').innerHTML = `<div class="text-red-500 text-center p-6">Failed to load data ❌</div>`;
+    }
+}
+
+function renderLeaderboard() {
+    const container = document.getElementById('leaderboard-container');
+    container.innerHTML = "";
+    const modeData = leaderboardData.modes?.[currentMode];
+    if (!modeData) { container.innerHTML = "No data available"; return; }
+
+    // Sort tiers highest → lowest
+    const sortedTiers = Object.keys(tierPoints).sort((a,b) => tierPoints[b] - tierPoints[a]);
+
+    sortedTiers.forEach(tier => {
+        const tierData = modeData.tiers[tier] || { points: tierPoints[tier], players: [] };
+        const safeTier = sanitize(tier);
+        const safePoints = sanitize(tierData.points);
+        const safePlayers = tierData.players.map(p => ({
+            displayName: sanitize(p.displayName),
+            username: sanitize(p.username)
+        }));
+
+        const row = document.createElement('div');
+        row.className = "tier-row";
+        row.style.borderLeft = `6px solid ${tierColors[tier]}`;
+        row.innerHTML = `
+            <div class="tier-label">${safeTier}<br><small>${safePoints} pts</small></div>
+            <div class="flex flex-wrap gap-2 p-2">
+                ${safePlayers.length > 0 
+                    ? safePlayers.map(p => `<span class="player-card">${p.displayName}</span>`).join('')
+                    : `<span class="text-gray-500 italic p-2">No players</span>`
+                }
+            </div>
+        `;
+        row.onclick = () => openModal(safeTier, safePlayers);
+        container.appendChild(row);
+    });
+}
+
+function openModal(tier, players) {
+    document.getElementById('modal-title').textContent = `${tier} Players`;
+    const list = document.getElementById('modal-players');
+    list.innerHTML = players.length > 0 
+        ? players.map(p => `<span class="player-card">${p.displayName}</span>`).join('')
+        : `<span class="text-gray-400">No players in this tier</span>`;
+    document.getElementById('tier-modal').style.display = "flex";
+}
+
+function closeModal() {
+    document.getElementById('tier-modal').style.display = "none";
+}
+
+// Search function
+document.getElementById('searchInput').addEventListener('input', function() {
+    const query = sanitize(this.value.trim().toLowerCase());
+    document.querySelectorAll('.player-card').forEach(card => {
+        card.classList.toggle('search-highlight', card.textContent.toLowerCase().includes(query));
+    });
+});
+
+// Gamemode buttons
+document.querySelectorAll('.gamemode-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.gamemode-btn').forEach(b => {
+            b.classList.remove('bg-red-900');
+            b.classList.add('bg-black');
+        });
+        btn.classList.remove('bg-black');
+        btn.classList.add('bg-red-900');
+        currentMode = btn.dataset.mode;
+        renderLeaderboard();
+    });
+});
+
+// Auto refresh every 10 mins
+loadData();
+setInterval(loadData, 600000);
+
+// Close modal on outside click
+window.addEventListener('click', e => {
+    if (e.target === document.getElementById('tier-modal')) closeModal();
+});
+</script>
+</body>
+</html>
