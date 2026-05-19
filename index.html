@@ -5,11 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <title>MCBE Geyser Tierlist</title>
 
-    <!-- 🔒 SECURITY -->
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="X-Frame-Options" content="DENY">
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://i.ibb.co; connect-src 'self' https://weegy542.github.io;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline'; connect-src 'self' https://weegy542.github.io;">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -41,29 +40,18 @@
             .rank-1 { color: #ffd700; font-weight: bold; text-shadow: 0 0 3px #ffd70080; }
             .rank-2 { color: #c0c0c0; font-weight: bold; text-shadow: 0 0 3px #c0c0c080; }
             .rank-3 { color: #cd7f32; font-weight: bold; text-shadow: 0 0 3px #cd7f3280; }
-            .logo-glow { filter: drop-shadow(0 0 8px #ff0000) drop-shadow(0 0 15px #ff2222); }
         }
     </style>
 </head>
 <body class="bg-bgMain text-white font-mc min-h-screen glow-bg">
 
-<!-- 🔍 SEARCH BAR - TOP LEFT -->
+<!-- 🔍 SEARCH BAR -->
 <div class="fixed top-2 left-2 z-50 w-[calc(100%-16px)]">
     <input type="text" id="searchInput" placeholder="Search IGN..." maxlength="32" class="w-full bg-black border border-redGlow rounded py-2 px-3 text-base text-white outline-none search-glow">
 </div>
 <div class="h-16"></div>
 
-<!-- 🖼️ LOGO AT VERY TOP -->
-<div class="flex justify-center py-4">
-    <img 
-        src="https://i.ibb.co/93q5X2y/tiers-logo.png" 
-        alt="MCBE Geyser Tiers" 
-        class="w-40 h-40 object-contain logo-glow"
-        loading="lazy"
-    >
-</div>
-
-<!-- 🎮 GAMEMODES -->
+<!-- 🎮 GAMEMODES - CRYSTAL REMOVED -->
 <div class="px-2 py-3 overflow-x-auto">
     <div class="flex flex-row gap-2">
         <button class="mode-btn bg-red-900 px-3 py-2 rounded text-sm whitespace-nowrap mode-glow" data-mode="NethOP">NethOP</button>
@@ -72,7 +60,6 @@
         <button class="mode-btn bg-[#181818] px-3 py-2 rounded text-sm whitespace-nowrap mode-glow hover:bg-red-900" data-mode="SMP">SMP</button>
         <button class="mode-btn bg-[#181818] px-3 py-2 rounded text-sm whitespace-nowrap mode-glow hover:bg-red-900" data-mode="Axe">Axe</button>
         <button class="mode-btn bg-[#181818] px-3 py-2 rounded text-sm whitespace-nowrap mode-glow hover:bg-red-900" data-mode="Mace">Mace</button>
-        <button class="mode-btn bg-[#181818] px-3 py-2 rounded text-sm whitespace-nowrap mode-glow hover:bg-red-900" data-mode="Crystal">Crystal</button>
         <button class="mode-btn bg-[#181818] px-3 py-2 rounded text-sm whitespace-nowrap mode-glow hover:bg-red-900" data-mode="DiaPot">DiaPot</button>
         <button class="mode-btn bg-[#181818] px-3 py-2 rounded text-sm whitespace-nowrap mode-glow hover:bg-red-900" data-mode="Sword">Sword</button>
     </div>
@@ -83,18 +70,9 @@
     <h1 class="text-xl font-bold text-black title-glow">MCBE Geyser Tierlist</h1>
 </div>
 
-<!-- 🏆 LEADERBOARD - TIERS NEXT TO PLAYERS LIKE MCTIERS ✅ -->
+<!-- 🏆 LEADERBOARD -->
 <div class="px-3 py-4">
     <div id="leaderboard" class="space-y-3 text-base"></div>
-</div>
-
-<!-- MODAL -->
-<div id="tierModal" class="fixed inset-0 bg-black/95 z-40 hidden items-center justify-center p-3">
-    <div class="bg-[#0a0a0a] w-full max-w-sm rounded border border-redGlow p-4 shadow-lg shadow-redGlow/30">
-        <h3 id="modalTitle" class="text-lg font-bold text-black title-glow mb-3"></h3>
-        <div id="modalPlayers" class="space-y-2"></div>
-        <button onclick="closeModal()" class="mt-4 w-full bg-red-900 py-2 rounded text-white">Close</button>
-    </div>
 </div>
 
 <script>
@@ -123,19 +101,14 @@ function renderBoard() {
     const mode = data.modes?.[currentMode];
     if(!mode) { container.innerHTML = `<div class="text-gray-400 p-3 text-center">No data available</div>`; return; }
 
-    // Combine all tiers and players
     const allPlayers = [];
     tierOrder.forEach(tier => {
         const players = mode.tiers?.[tier]?.players || [];
         players.forEach(p => {
-            allPlayers.push({
-                ign: safe(p.ign || p.displayName),
-                tier: safe(tier)
-            });
+            allPlayers.push({ ign: safe(p.ign || p.displayName), tier: safe(tier) });
         });
     });
 
-    // Show each player with tier tag, like MCTiers
     if(allPlayers.length === 0) {
         container.innerHTML = `<div class="text-gray-500 italic text-center py-4">No players in this gamemode</div>`;
         return;
@@ -151,51 +124,22 @@ function renderBoard() {
 
         const div = document.createElement("div");
         div.className = "bg-[#0a0a0a] border border-gray-700 rounded p-3 flex items-center justify-between";
-        div.innerHTML = `
-            <span class="${rankClass}">#${rank} ${player.ign}</span>
-            <span class="tier-tag text-black font-bold">${player.tier}</span>
-        `;
+        div.innerHTML = `<span class="${rankClass}">#${rank} ${player.ign}</span><span class="tier-tag text-black font-bold">${player.tier}</span>`;
         container.appendChild(div);
     });
 }
 
-function openModal(tier, players) {
-    document.getElementById("modalTitle").textContent = `${tier} Leaderboard`;
-    const list = document.getElementById("modalPlayers");
-    list.innerHTML = "";
-    players.forEach((p,i) => {
-        const rank = i+1;
-        const ign = safe(p.ign || p.displayName);
-        const cls = rank===1 ? "rank-1" : rank===2 ? "rank-2" : rank===3 ? "rank-3" : "text-white";
-        list.innerHTML += `<div class="${cls} py-1 text-lg">#${rank} ${ign}</div>`;
-    });
-    document.getElementById("tierModal").style.display = "flex";
-}
-function closeModal() {
-    document.getElementById("tierModal").style.display = "none";
-}
-
-// Gamemode switcher
 document.querySelectorAll(".mode-btn").forEach(btn => btn.addEventListener("click", () => {
-    document.querySelectorAll(".mode-btn").forEach(b => {
-        b.classList.remove("bg-red-900");
-        b.classList.add("bg-[#181818]");
-    });
-    btn.classList.remove("bg-[#181818]");
-    btn.classList.add("bg-red-900");
+    document.querySelectorAll(".mode-btn").forEach(b => { b.classList.remove("bg-red-900"); b.classList.add("bg-[#181818]"); });
+    btn.classList.remove("bg-[#181818]"); btn.classList.add("bg-red-900");
     currentMode = btn.dataset.mode;
     renderBoard();
 }));
 
-// Search
 document.getElementById("searchInput").addEventListener("input", () => {
     const q = safe(document.getElementById("searchInput").value.toLowerCase().trim());
-    document.querySelectorAll("#leaderboard div").forEach(el => {
-        el.classList.toggle("ring-1 ring-yellow-400", el.textContent.toLowerCase().includes(q));
-    });
+    document.querySelectorAll("#leaderboard div").forEach(el => el.classList.toggle("ring-1 ring-yellow-400", el.textContent.toLowerCase().includes(q)));
 });
-
-window.onclick = e => e.target === document.getElementById("tierModal") && closeModal();
 
 loadData();
 setInterval(loadData, 600000);
