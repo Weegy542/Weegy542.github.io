@@ -2,170 +2,154 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <title>MCBE Geyser Tierlist</title>
-    <style>
-        :root {
-            --primary: #385E8B;
-            --accent: #48B518;
-            --dark: #452E3F;
-            --light: #f8f9fa;
-            --white: #ffffff;
-        }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Roboto, sans-serif;
-        }
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline'; connect-src 'self' https://weegy542.github.io;">
 
-        body {
-            background: linear-gradient(135deg, var(--dark) 0%, var(--primary) 100%);
-            min-height: 100vh;
-            color: var(--white);
-            padding: 2rem 1rem;
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bgMain: '#452E3F',
+                        primary: '#385E8B',
+                        accent: '#48B518',
+                        tierGrey: '#444444',
+                        gold: '#ffd700',
+                        silver: '#c0c0c0',
+                        bronze: '#cd7f32'
+                    },
+                    fontFamily: {
+                        mc: ['"Minecraft"', 'monospace', 'sans-serif']
+                    }
+                }
+            }
         }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 3rem;
-            padding: 2rem;
-            background: rgba(255,255,255,0.1);
-            border-radius: 12px;
-            backdrop-filter: blur(8px);
-            border-bottom: 4px solid var(--accent);
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            color: var(--white);
-            margin-bottom: 0.5rem;
-        }
-
-        .updated {
-            color: var(--accent);
-            font-weight: 500;
-        }
-
-        .modes-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .mode-card {
-            background: rgba(255,255,255,0.1);
-            border-radius: 10px;
-            padding: 1.5rem;
-            border-left: 5px solid var(--accent);
-            backdrop-filter: blur(6px);
-        }
-
-        .mode-title {
-            color: var(--accent);
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .tier {
-            margin: 1rem 0;
-            padding: 0.8rem;
-            background: rgba(255,255,255,0.08);
-            border-radius: 6px;
-        }
-
-        .tier-name {
-            font-weight: bold;
-            color: var(--white);
-            margin-bottom: 0.4rem;
-        }
-
-        .players {
-            list-style: none;
-            color: #e0e0e0;
-            font-size: 0.95rem;
-        }
-
-        .no-players {
-            color: #b0b0b0;
-            font-style: italic;
-        }
-
-        footer {
-            text-align: center;
-            margin-top: 3rem;
-            color: rgba(255,255,255,0.7);
-            font-size: 0.9rem;
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .glow-bg { background: radial-gradient(circle at top, #2c1e29 0%, #452E3F 70%); }
+            .mode-glow { box-shadow: 0 0 6px #48B51880, 0 0 12px #48B51840; }
+            .title-glow { text-shadow: 0 0 4px #48B518, 0 0 8px #385E8B; }
+            .tier-tag { background: #385E8B; padding: 2px 8px; border-radius: 4px; font-size: 0.8em; box-shadow: 0 0 3px #385E8B70; color: white; }
+            .search-glow { box-shadow: 0 0 5px #48B51890; }
+            .rank-1 { color: #ffd700; font-weight: bold; text-shadow: 0 0 3px #ffd70080; }
+            .rank-2 { color: #c0c0c0; font-weight: bold; text-shadow: 0 0 3px #c0c0c080; }
+            .rank-3 { color: #cd7f32; font-weight: bold; text-shadow: 0 0 3px #cd7f3280; }
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <header>
-            <h1>GEYSER TIER LIST</h1>
-            <p class="updated">Last Updated: <span id="lastUpdated">Loading...</span></p>
-        </header>
+<body class="bg-bgMain text-white font-mc min-h-screen glow-bg">
 
-        <div class="modes-grid" id="modesContainer">
-            <p style="text-align:center; grid-column: 1 / -1; font-size:1.2rem;">Loading tier list data...</p>
-        </div>
+<!-- 🔍 SEARCH BAR -->
+<div class="fixed top-2 left-2 z-50 w-[calc(100%-16px)]">
+    <input type="text" id="searchInput" placeholder="Search IGN..." maxlength="32" class="w-full bg-[#2b1d28] border border-accent rounded py-2 px-3 text-base text-white outline-none search-glow">
+</div>
+<div class="h-16"></div>
 
-        <footer>
-            <p>© Geyser Tier System | Colors: #385E8B • #48B518 • #452E3F</p>
-        </footer>
+<!-- 🎮 GAMEMODES - CRYSTAL REMOVED -->
+<div class="px-2 py-3 overflow-x-auto">
+    <div class="flex flex-row gap-2">
+        <button class="mode-btn bg-primary px-3 py-2 rounded text-sm whitespace-nowrap mode-glow" data-mode="NethOP">NethOP</button>
+        <button class="mode-btn bg-[#2b1d28] px-3 py-2 rounded text-sm whitespace-nowrap mode-glow hover:bg-primary" data-mode="DiaSMP">DiaSMP</button>
+        <button class="mode-btn bg-[#2b1d28] px-3 py-2 rounded text-sm whitespace-nowrap mode-glow hover:bg-primary" data-mode="UHC">UHC</button>
+        <button class="mode-btn bg-[#2b1d28] px-3 py-2 rounded text-sm whitespace-nowrap mode-glow hover:bg-primary" data-mode="SMP">SMP</button>
+        <button class="mode-btn bg-[#2b1d28] px-3 py-2 rounded text-sm whitespace-nowrap mode-glow hover:bg-primary" data-mode="Axe">Axe</button>
+        <button class="mode-btn bg-[#2b1d28] px-3 py-2 rounded text-sm whitespace-nowrap mode-glow hover:bg-primary" data-mode="Mace">Mace</button>
+        <button class="mode-btn bg-[#2b1d28] px-3 py-2 rounded text-sm whitespace-nowrap mode-glow hover:bg-primary" data-mode="DiaPot">DiaPot</button>
+        <button class="mode-btn bg-[#2b1d28] px-3 py-2 rounded text-sm whitespace-nowrap mode-glow hover:bg-primary" data-mode="Sword">Sword</button>
     </div>
+</div>
 
-    <script>
-        async function loadData() {
-            try {
-                const res = await fetch('/api/data');
-                const data = await res.json();
+<!-- 📝 TITLE -->
+<div class="px-3 py-3 text-center">
+    <h1 class="text-xl font-bold text-white title-glow">MCBE Geyser Tierlist</h1>
+</div>
 
-                document.getElementById('lastUpdated').textContent = new Date(data.lastUpdated).toLocaleString();
-                const container = document.getElementById('modesContainer');
-                container.innerHTML = '';
+<!-- 🏆 LEADERBOARD -->
+<div class="px-3 py-4">
+    <div id="leaderboard" class="space-y-3 text-base"></div>
+</div>
 
-                for (const [modeName, modeData] of Object.entries(data.modes)) {
-                    const card = document.createElement('div');
-                    card.className = 'mode-card';
-                    card.innerHTML = `<h2 class="mode-title">${modeName}</h2>`;
+<script>
+function safe(str) {
+    return String(str).replace(/[&<>"'`\/\\]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
 
-                    for (const tier of ["LT5","HT5","LT4","HT4","LT3","HT3","LT2","HT2","LT1","HT1"]) {
-                        const tierData = modeData.tiers[tier];
-                        const playersList = tierData.players.length 
-                            ? tierData.players.map(p => `<li>• ${p.name}</li>`).join('')
-                            : `<li class="no-players">No players</li>`;
+const tierOrder = ["LT5","HT5","LT4","HT4","LT3","HT3","LT2","HT2","LT1","HT1"];
+let data = {};
+let currentMode = "NethOP";
 
-                        card.innerHTML += `
-                            <div class="tier">
-                                <div class="tier-name">${tier}</div>
-                                <ul class="players">${playersList}</ul>
-                            </div>
-                        `;
-                    }
+async function loadData() {
+    try {
+        const res = await fetch("https://weegy542.github.io/data.json", {cache:"no-cache"});
+        if(!res.ok) throw new Error();
+        data = await res.json();
+        renderBoard();
+    } catch {
+        document.getElementById("leaderboard").innerHTML = `<div class="text-accent p-3 text-center">Failed to load ❌</div>`;
+    }
+}
 
-                    container.appendChild(card);
-                }
+function renderBoard() {
+    const container = document.getElementById("leaderboard");
+    container.innerHTML = "";
+    const mode = data.modes?.[currentMode];
+    if(!mode) { container.innerHTML = `<div class="text-gray-300 p-3 text-center">No data available</div>`; return; }
 
-            } catch (err) {
-                document.getElementById('modesContainer').innerHTML = `
-                    <p style="text-align:center; color:#ffcccc; grid-column: 1 / -1;">
-                        ❌ Could not load data. Please wait a moment and refresh.
-                    </p>
-                `;
-            }
-        }
+    const allPlayers = [];
+    tierOrder.forEach(tier => {
+        const players = mode.tiers?.[tier]?.players || [];
+        players.forEach(p => {
+            allPlayers.push({ ign: safe(p.ign || p.displayName || p.name), tier: safe(tier) });
+        });
+    });
 
-        loadData();
-        setInterval(loadData, 60000); // refresh every 1 minute
-    </script>
+    if(allPlayers.length === 0) {
+        container.innerHTML = `<div class="text-gray-300 italic text-center py-4">No players in this gamemode</div>`;
+        return;
+    }
+
+    allPlayers.forEach((player, index) => {
+        const rank = index + 1;
+        let rankClass = "";
+        if(rank === 1) rankClass = "rank-1";
+        else if(rank === 2) rankClass = "rank-2";
+        else if(rank === 3) rankClass = "rank-3";
+        else rankClass = "text-white";
+
+        const div = document.createElement("div");
+        div.className = "bg-[#2b1d28] border border-primary rounded p-3 flex items-center justify-between hover:border-accent transition-all";
+        div.innerHTML = `<span class="${rankClass}">#${rank} ${player.ign}</span><span class="tier-tag font-bold">${player.tier}</span>`;
+        container.appendChild(div);
+    });
+}
+
+document.querySelectorAll(".mode-btn").forEach(btn => btn.addEventListener("click", () => {
+    document.querySelectorAll(".mode-btn").forEach(b => { 
+        b.classList.remove("bg-primary"); 
+        b.classList.add("bg-[#2b1d28]"); 
+    });
+    btn.classList.remove("bg-[#2b1d28]"); 
+    btn.classList.add("bg-primary");
+    currentMode = btn.dataset.mode;
+    renderBoard();
+}));
+
+document.getElementById("searchInput").addEventListener("input", () => {
+    const q = safe(document.getElementById("searchInput").value.toLowerCase().trim());
+    document.querySelectorAll("#leaderboard div").forEach(el => 
+        el.classList.toggle("ring-1 ring-accent", el.textContent.toLowerCase().includes(q))
+    );
+});
+
+loadData();
+setInterval(loadData, 600000);
+</script>
 </body>
 </html>
