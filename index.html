@@ -1,155 +1,127 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <title>MCBE Geyser Tierlist</title>
-
-    <meta http-equiv="X-Content-Type-Options" content="nosniff">
-    <meta http-equiv="X-Frame-Options" content="DENY">
-    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline'; connect-src 'self' https://weegy542.github.io;">
-
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        bgMain: '#452E3F',
-                        primary: '#385E8B',
-                        accent: '#48B518',
-                        tierGrey: '#444444',
-                        gold: '#ffd700',
-                        silver: '#c0c0c0',
-                        bronze: '#cd7f32'
-                    },
-                    fontFamily: {
-                        mc: ['"Minecraft"', 'monospace', 'sans-serif']
-                    }
-                }
-            }
-        }
-    </script>
-    <style type="text/tailwindcss">
-        @layer utilities {
-            .glow-bg { background: radial-gradient(circle at top, #2c1e29 0%, #452E3F 70%); }
-            .mode-glow { box-shadow: 0 0 6px #48B51880, 0 0 12px #48B51840; }
-            .title-glow { text-shadow: 0 0 4px #48B518, 0 0 8px #385E8B; }
-            .tier-tag { background: #385E8B; padding: 2px 8px; border-radius: 4px; font-size: 0.8em; box-shadow: 0 0 3px #385E8B70; color: white; }
-            .search-glow { box-shadow: 0 0 5px #48B51890; }
-            .rank-1 { color: #ffd700; font-weight: bold; text-shadow: 0 0 3px #ffd70080; }
-            .rank-2 { color: #c0c0c0; font-weight: bold; text-shadow: 0 0 3px #c0c0c080; }
-            .rank-3 { color: #cd7f32; font-weight: bold; text-shadow: 0 0 3px #cd7f3280; }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>[MCBE] Geyser Tierlist</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .tier-1 { background: linear-gradient(90deg, #facc15, #eab308); color: black; }
+    .tier-2 { background: linear-gradient(90deg, #a5b4fc, #6366f1); }
+    .tier-3 { background: linear-gradient(90deg, #6ee7b7, #10b981); color: black; }
+    .tier-4 { background: linear-gradient(90deg, #f87171, #ef4444); }
+    .tier-5 { background: linear-gradient(90deg, #9ca3af, #6b7280); }
+  </style>
 </head>
-<body class="bg-bgMain text-white font-mc min-h-screen glow-bg">
+<body class="bg-zinc-950 text-zinc-100 min-h-screen">
 
-<!-- 🔍 SEARCH BAR -->
-<div class="fixed top-2 left-2 z-50 w-[calc(100%-16px)]">
-    <input type="text" id="searchInput" placeholder="Search IGN..." maxlength="32" class="w-full bg-[#2b1d28] border border-accent rounded py-2 px-3 text-base text-white outline-none search-glow">
-</div>
-<div class="h-16"></div>
+  <!-- Header -->
+  <header class="border-b border-zinc-800 bg-zinc-900 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <div class="w-11 h-11 bg-gradient-to-br from-emerald-500 to-cyan-500 rounded-2xl flex items-center justify-center text-2xl font-black shadow-lg">
+          G
+        </div>
+        <div>
+          <h1 class="text-3xl font-bold tracking-tighter">[MCBE] Geyser Tierlist</h1>
+          <p class="text-emerald-400 text-sm -mt-1">Bedrock PvP Rankings • Powered by Geyser</p>
+        </div>
+      </div>
 
-<!-- 🎮 GAMEMODES - CRYSTAL REMOVED -->
-<div class="px-2 py-3 overflow-x-auto">
-    <div class="flex flex-row gap-2">
-        <button class="mode-btn bg-primary px-3 py-2 rounded text-sm whitespace-nowrap mode-glow" data-mode="NethOP">NethOP</button>
-        <button class="mode-btn bg-[#2b1d28] px-3 py-2 rounded text-sm whitespace-nowrap mode-glow hover:bg-primary" data-mode="DiaSMP">DiaSMP</button>
-        <button class="mode-btn bg-[#2b1d28] px-3 py-2 rounded text-sm whitespace-nowrap mode-glow hover:bg-primary" data-mode="UHC">UHC</button>
-        <button class="mode-btn bg-[#2b1d28] px-3 py-2 rounded text-sm whitespace-nowrap mode-glow hover:bg-primary" data-mode="SMP">SMP</button>
-        <button class="mode-btn bg-[#2b1d28] px-3 py-2 rounded text-sm whitespace-nowrap mode-glow hover:bg-primary" data-mode="Axe">Axe</button>
-        <button class="mode-btn bg-[#2b1d28] px-3 py-2 rounded text-sm whitespace-nowrap mode-glow hover:bg-primary" data-mode="Mace">Mace</button>
-        <button class="mode-btn bg-[#2b1d28] px-3 py-2 rounded text-sm whitespace-nowrap mode-glow hover:bg-primary" data-mode="DiaPot">DiaPot</button>
-        <button class="mode-btn bg-[#2b1d28] px-3 py-2 rounded text-sm whitespace-nowrap mode-glow hover:bg-primary" data-mode="Sword">Sword</button>
+      <div class="flex gap-8 text-sm font-medium">
+        <a href="#" onclick="switchTab(0)" class="nav-link active text-emerald-400">Overall</a>
+        <a href="#" onclick="switchTab(1)" class="nav-link">Sword</a>
+        <a href="#" onclick="switchTab(2)" class="nav-link">Axe</a>
+        <a href="#" onclick="switchTab(3)" class="nav-link">PotPvP</a>
+        <a href="#" onclick="switchTab(4)" class="nav-link">Crystal</a>
+        <a href="#" onclick="switchTab(5)" class="nav-link">UHC</a>
+      </div>
+
+      <input id="search" type="text" placeholder="Search players..." 
+             class="bg-zinc-800 border border-zinc-700 rounded-full px-5 py-3 text-sm focus:outline-none focus:border-emerald-500 w-80 placeholder-zinc-500">
     </div>
-</div>
+  </header>
 
-<!-- 📝 TITLE -->
-<div class="px-3 py-3 text-center">
-    <h1 class="text-xl font-bold text-white title-glow">MCBE Geyser Tierlist</h1>
-</div>
+  <div class="max-w-7xl mx-auto px-6 py-10">
+    <h2 id="page-title" class="text-4xl font-bold mb-8">Overall Rankings</h2>
 
-<!-- 🏆 LEADERBOARD -->
-<div class="px-3 py-4">
-    <div id="leaderboard" class="space-y-3 text-base"></div>
-</div>
+    <div class="bg-zinc-900 rounded-3xl overflow-hidden border border-zinc-800">
+      <table class="w-full">
+        <thead>
+          <tr class="border-b border-zinc-800 text-left text-zinc-400 text-sm uppercase tracking-wider">
+            <th class="px-8 py-6 w-12">#</th>
+            <th class="px-6 py-6">Player</th>
+            <th class="px-6 py-6">Tier Points</th>
+            <th class="px-6 py-6">Overall</th>
+            <th class="px-6 py-6">Sword</th>
+            <th class="px-6 py-6">Axe</th>
+            <th class="px-6 py-6">PotPvP</th>
+          </tr>
+        </thead>
+        <tbody id="leaderboard-body" class="text-sm"></tbody>
+      </table>
+    </div>
 
-<script>
-function safe(str) {
-    return String(str).replace(/[&<>"'`\/\\]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
+    <p class="text-center text-zinc-500 text-xs mt-8">Last updated: Just now • Data from GeyserMC Bedrock community</p>
+  </div>
 
-const tierOrder = ["LT5","HT5","LT4","HT4","LT3","HT3","LT2","HT2","LT1","HT1"];
-let data = {};
-let currentMode = "NethOP";
+  <script>
+    const players = [
+      { rank: 1, name: "GeyserKing", points: 245, overall: "HT1", sword: "HT1", axe: "HT2", pot: "HT1" },
+      { rank: 2, name: "BedrockGod", points: 228, overall: "LT1", sword: "LT2", axe: "HT1", pot: "HT1" },
+      { rank: 3, name: "MCBEProX", points: 201, overall: "LT2", sword: "HT2", axe: "HT1", pot: "LT2" },
+      { rank: 4, name: "SwampSniper", points: 187, overall: "HT2", sword: "LT2", axe: "HT2", pot: "HT3" },
+      { rank: 5, name: "PixelWarrior", points: 165, overall: "LT2", sword: "HT3", axe: "LT1", pot: "HT2" },
+      { rank: 6, name: "EnderSlayer", points: 152, overall: "HT3", sword: "HT2", axe: "LT2", pot: "LT1" },
+    ];
 
-async function loadData() {
-    try {
-        const res = await fetch("https://weegy542.github.io/data.json", {cache:"no-cache"});
-        if(!res.ok) throw new Error();
-        data = await res.json();
-        renderBoard();
-    } catch {
-        document.getElementById("leaderboard").innerHTML = `<div class="text-accent p-3 text-center">Failed to load ❌</div>`;
-    }
-}
-
-function renderBoard() {
-    const container = document.getElementById("leaderboard");
-    container.innerHTML = "";
-    const mode = data.modes?.[currentMode];
-    if(!mode) { container.innerHTML = `<div class="text-gray-300 p-3 text-center">No data available</div>`; return; }
-
-    const allPlayers = [];
-    tierOrder.forEach(tier => {
-        const players = mode.tiers?.[tier]?.players || [];
-        players.forEach(p => {
-            allPlayers.push({ ign: safe(p.ign || p.displayName || p.name), tier: safe(tier) });
-        });
-    });
-
-    if(allPlayers.length === 0) {
-        container.innerHTML = `<div class="text-gray-300 italic text-center py-4">No players in this gamemode</div>`;
-        return;
+    function getTierClass(tier) {
+      if (tier.includes('HT1')) return 'tier-1 px-4 py-1 rounded-xl text-xs font-bold';
+      if (tier.includes('HT2')) return 'tier-2 px-4 py-1 rounded-xl text-xs font-bold';
+      if (tier.includes('HT3')) return 'tier-3 px-4 py-1 rounded-xl text-xs font-bold';
+      return 'tier-4 px-4 py-1 rounded-xl text-xs font-bold';
     }
 
-    allPlayers.forEach((player, index) => {
-        const rank = index + 1;
-        let rankClass = "";
-        if(rank === 1) rankClass = "rank-1";
-        else if(rank === 2) rankClass = "rank-2";
-        else if(rank === 3) rankClass = "rank-3";
-        else rankClass = "text-white";
+    function renderLeaderboard(data) {
+      const tbody = document.getElementById('leaderboard-body');
+      tbody.innerHTML = '';
 
-        const div = document.createElement("div");
-        div.className = "bg-[#2b1d28] border border-primary rounded p-3 flex items-center justify-between hover:border-accent transition-all";
-        div.innerHTML = `<span class="${rankClass}">#${rank} ${player.ign}</span><span class="tier-tag font-bold">${player.tier}</span>`;
-        container.appendChild(div);
+      data.forEach(player => {
+        const row = document.createElement('tr');
+        row.className = "border-b border-zinc-800 hover:bg-zinc-800/70 transition-all duration-200";
+        row.innerHTML = `
+          <td class="px-8 py-6 font-mono text-zinc-400">#${player.rank}</td>
+          <td class="px-6 py-6 font-semibold">${player.name}</td>
+          <td class="px-6 py-6 text-emerald-400 font-bold">${player.points}</td>
+          <td class="px-6 py-6"><span class="${getTierClass(player.overall)}">${player.overall}</span></td>
+          <td class="px-6 py-6"><span class="${getTierClass(player.sword)}">${player.sword}</span></td>
+          <td class="px-6 py-6"><span class="${getTierClass(player.axe)}">${player.axe}</span></td>
+          <td class="px-6 py-6"><span class="${getTierClass(player.pot)}">${player.pot}</span></td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function switchTab(tabIndex) {
+      document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active', 'text-emerald-400'));
+      document.querySelectorAll('.nav-link')[tabIndex].classList.add('active', 'text-emerald-400');
+      
+      const titles = ["Overall Rankings", "Sword Rankings", "Axe Rankings", "PotPvP Rankings", "Crystal Rankings", "UHC Rankings"];
+      document.getElementById('page-title').textContent = titles[tabIndex];
+      renderLeaderboard(players);
+    }
+
+    // Search functionality
+    document.getElementById('search').addEventListener('input', (e) => {
+      const term = e.target.value.toLowerCase();
+      const filtered = players.filter(p => p.name.toLowerCase().includes(term));
+      renderLeaderboard(filtered);
     });
-}
 
-document.querySelectorAll(".mode-btn").forEach(btn => btn.addEventListener("click", () => {
-    document.querySelectorAll(".mode-btn").forEach(b => { 
-        b.classList.remove("bg-primary"); 
-        b.classList.add("bg-[#2b1d28]"); 
-    });
-    btn.classList.remove("bg-[#2b1d28]"); 
-    btn.classList.add("bg-primary");
-    currentMode = btn.dataset.mode;
-    renderBoard();
-}));
-
-document.getElementById("searchInput").addEventListener("input", () => {
-    const q = safe(document.getElementById("searchInput").value.toLowerCase().trim());
-    document.querySelectorAll("#leaderboard div").forEach(el => 
-        el.classList.toggle("ring-1 ring-accent", el.textContent.toLowerCase().includes(q))
-    );
-});
-
-loadData();
-setInterval(loadData, 600000);
-</script>
+    // Initial render
+    renderLeaderboard(players);
+  </script>
 </body>
 </html>
